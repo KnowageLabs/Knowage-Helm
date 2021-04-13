@@ -1,0 +1,80 @@
+#
+# Knowage, Open Source Business Intelligence suite
+# Copyright (C) 2016 Engineering Ingegneria Informatica S.p.A.
+# 
+# Knowage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Knowage is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+# 
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+#  __  __          _____ _   _            _____  _____  
+# |  \/  |   /\   |_   _| \ | |     /\   |  __ \|  __ \ 
+# | \  / |  /  \    | | |  \| |    /  \  | |__) | |__) |
+# | |\/| | / /\ \   | | | . ` |   / /\ \ |  ___/|  ___/ 
+# | |  | |/ ____ \ _| |_| |\  |  / ____ \| |    | |     
+# |_|  |_/_/    \_\_____|_| \_| /_/    \_\_|    |_|     
+#                                                       
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "knowage.pvc" . }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: "default"
+
+
+
+#  __  __           _____ _______ ______ _____    _____  ____  
+# |  \/  |   /\    / ____|__   __|  ____|  __ \  |  __ \|  _ \ 
+# | \  / |  /  \  | (___    | |  | |__  | |__) | | |  | | |_) |
+# | |\/| | / /\ \  \___ \   | |  |  __| |  _  /  | |  | |  _ < 
+# | |  | |/ ____ \ ____) |  | |  | |____| | \ \  | |__| | |_) |
+# |_|  |_/_/    \_\_____/   |_|  |______|_|  \_\ |_____/|____/ 
+#                                                              
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "knowage.db.pvc" . }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: "default"
+
+
+#   _____          _____ _    _ ______   _____  ____  
+#  / ____|   /\   / ____| |  | |  ____| |  __ \|  _ \ 
+# | |       /  \ | |    | |__| | |__    | |  | | |_) |
+# | |      / /\ \| |    |  __  |  __|   | |  | |  _ < 
+# | |____ / ____ \ |____| |  | | |____  | |__| | |_) |
+#  \_____/_/    \_\_____|_|  |_|______| |_____/|____/ 
+#                                                     
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "knowage.cache.pvc" . }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: "default"

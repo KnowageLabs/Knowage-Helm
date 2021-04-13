@@ -1,0 +1,30 @@
+knowage:
+
+  tag: 7.4.2
+
+  # 
+  # Set the external URL of knowage.
+  # 
+  # Used to set HTTP headers of the internal proxy.
+  # 
+  completeExternalUrl: "http://localhost:8080"
+
+  # 
+  # Databases properties.
+  # 
+  db:
+    user:     "knowage"
+    pass:     # Optional : random value if not provided 
+    rootPass: # Optional : random value if not provided 
+    name:     "knowage_master"
+  cache:
+    user:     "knowage"
+    pass:     # Optional : random value if not provided 
+    rootPass: # Optional : random value if not provided 
+    name:     "knowage_cache"
+  
+  # 
+  # Security properties.
+  # 
+  hmac:                     # Optional : random value if not provided 
+  passwordEncryptionSecret: # Optional : random value if not provided 
