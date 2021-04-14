@@ -3,6 +3,11 @@ knowage:
   tag: 7.4.2
 
   # 
+  # Install a db with sample data
+  # 
+  installSampleData: true
+
+  # 
   # Set the external URL of knowage.
   # 
   # Used to set HTTP headers of the internal proxy.

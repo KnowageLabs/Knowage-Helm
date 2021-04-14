@@ -100,12 +100,12 @@ spec:
           - name: HMAC_KEY
             valueFrom:
               secretKeyRef:
-                name: knowage-secret
+                name: {{ include "knowage.secret" . }}
                 key: hmac
           - name: PASSWORD_ENCRYPTION_SECRET
             valueFrom:
               secretKeyRef:
-                name: knowage-secret
+                name: {{ include "knowage.secret" . }}
                 key: passwordEncryptionSecret
         livenessProbe:
           httpGet:
@@ -278,6 +278,49 @@ spec:
 
 
 
+{{ if eq ( default .Values.knowage.installSampleData false ) true }}
+#  ______ ____   ____  _____  __  __          _____ _______ 
+# |  ____/ __ \ / __ \|  __ \|  \/  |   /\   |  __ \__   __|
+# | |__ | |  | | |  | | |  | | \  / |  /  \  | |__) | | |   
+# |  __|| |  | | |  | | |  | | |\/| | / /\ \ |  _  /  | |   
+# | |   | |__| | |__| | |__| | |  | |/ ____ \| | \ \  | |   
+# |_|    \____/ \____/|_____/|_|  |_/_/    \_\_|  \_\ |_|   
+#                                                           
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "knowage.foodmart.deployment" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      knowage-suite.com/app: foodmart
+      {{- include "knowage.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        knowage-suite.com/app: foodmart
+        {{- include "knowage.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ include "knowage.foodmart.pod" . }}
+        image: "m20tech/mysql-foodmart"
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 10
+        ports:
+          - name: main
+            containerPort: 3306
+            protocol: TCP
+{{ end }}
+
 #  _______     _________ _    _  ____  _   _ 
 # |  __ \ \   / /__   __| |  | |/ __ \| \ | |
 # | |__) \ \_/ /   | |  | |__| | |  | |  \| |
@@ -310,7 +353,7 @@ spec:
           - name: HMAC_KEY
             valueFrom:
               secretKeyRef:
-                name: knowage-secret
+                name: {{ include "knowage.secret" . }}
                 key: hmac
           - name: KNOWAGE_PUBLIC_ADDRESS
             value: {{ include "knowage.service" . }}
@@ -369,7 +412,7 @@ spec:
           - name: HMAC_KEY
             valueFrom:
               secretKeyRef:
-                name: knowage-secret
+                name: {{ include "knowage.secret" . }}
                 key: hmac
         livenessProbe:
           httpGet:

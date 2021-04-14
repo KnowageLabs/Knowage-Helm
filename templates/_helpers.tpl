@@ -246,3 +246,35 @@ Create the name of the config map
 {{- define "knowage.config" -}}
 {{ printf "%s-%s" (include "knowage.fullname" .) "config" }}
 {{- end }}
+
+
+
+{{/*
+Create the name of the secret for the main app
+*/}}
+{{- define "knowage.secret" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "secret" }}
+{{- end }}
+
+
+
+{{/*
+Create the name of the service of the foodmart db
+*/}}
+{{- define "knowage.foodmart.service" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "foodmart" }}
+{{- end }}
+
+{{/*
+Create the name of the deployment of the foodmart db
+*/}}
+{{- define "knowage.foodmart.deployment" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "foodmart" }}
+{{- end }}
+
+{{/*
+Create the name of the pod of the foodmart db
+*/}}
+{{- define "knowage.foodmart.pod" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "foodmart" }}
+{{- end }}

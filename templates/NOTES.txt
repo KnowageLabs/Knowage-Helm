@@ -1,0 +1,24 @@
+  _  __                                    
+ | |/ /                                    
+ | ' / _ __   _____      ____ _  __ _  ___ 
+ |  < | '_ \ / _ \ \ /\ / / _` |/ _` |/ _ \
+ | . \| | | | (_) \ V  V / (_| | (_| |  __/
+ |_|\_\_| |_|\___/ \_/\_/ \__,_|\__, |\___|
+                                 __/ |     
+                                |___/      
+
+For Python and R integration, remember to add/set the following configuration in Knowage UI:
+ * python.virtualenv.100 = http://{{ include "knowage.python.service" . }}:5000
+ * r.env.100 = http://{{ include "knowage.r.service" . }}:5001
+Where 100 could be the number you prefer.
+
+{{ if eq ( default .Values.knowage.installSampleData false ) true }}
+You've selected to deploy a database with sample data, remember to create a datasource for sample data as:
+ * Label: foodmart
+ * Label: Database with sample data
+ * Dialect: MySQL/MariaDB (INNODB)
+ * JDBC: jdbc:mysql://{{ include "knowage.foodmart.service" . }}/foodmart
+ * Username: root
+ * Password: foodmart
+ * Driver: com.mysql.jdbc.Driver
+{{ end }}

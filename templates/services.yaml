@@ -87,6 +87,31 @@ spec:
 
 
 
+{{ if eq ( default .Values.knowage.installSampleData false ) true }}
+#  ______ ____   ____  _____  __  __          _____ _______ 
+# |  ____/ __ \ / __ \|  __ \|  \/  |   /\   |  __ \__   __|
+# | |__ | |  | | |  | | |  | | \  / |  /  \  | |__) | | |   
+# |  __|| |  | | |  | | |  | | |\/| | / /\ \ |  _  /  | |   
+# | |   | |__| | |__| | |__| | |  | |/ ____ \| | \ \  | |   
+# |_|    \____/ \____/|_____/|_|  |_/_/    \_\_|  \_\ |_|   
+#                                                           
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "knowage.foodmart.service" . }}
+spec:
+  selector:
+    knowage-suite.com/app: foodmart
+    {{- include "knowage.selectorLabels" . | nindent 4 }}
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+{{ end }}
+
+
+
 #  _______     _________ _    _  ____  _   _ 
 # |  __ \ \   / /__   __| |  | |/ __ \| \ | |
 # | |__) \ \_/ /   | |  | |__| | |  | |  \| |
