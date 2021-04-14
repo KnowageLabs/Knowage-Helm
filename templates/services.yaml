@@ -16,6 +16,31 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+
+#  _____  ________      ________ _____   _____ ______   _____  _____   ______   ____     __
+# |  __ \|  ____\ \    / /  ____|  __ \ / ____|  ____| |  __ \|  __ \ / __ \ \ / /\ \   / /
+# | |__) | |__   \ \  / /| |__  | |__) | (___ | |__    | |__) | |__) | |  | \ V /  \ \_/ / 
+# |  _  /|  __|   \ \/ / |  __| |  _  / \___ \|  __|   |  ___/|  _  /| |  | |> <    \   /  
+# | | \ \| |____   \  /  | |____| | \ \ ____) | |____  | |    | | \ \| |__| / . \    | |   
+# |_|  \_\______|   \/   |______|_|  \_\_____/|______| |_|    |_|  \_\\____/_/ \_\   |_|   
+#                                                                                          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "knowage.proxy.service" . }}
+spec:
+  type: LoadBalancer
+  selector:
+    knowage-suite.com/app: proxy
+    {{- include "knowage.selectorLabels" . | nindent 4 }}
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+
+
 #  __  __          _____ _   _            _____  _____  
 # |  \/  |   /\   |_   _| \ | |     /\   |  __ \|  __ \ 
 # | \  / |  /  \    | | |  \| |    /  \  | |__) | |__) |
@@ -29,7 +54,7 @@ kind: Service
 metadata:
   name: {{ include "knowage.service" . }}
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     knowage-suite.com/app: knowage
     {{- include "knowage.selectorLabels" . | nindent 4 }}
@@ -37,7 +62,6 @@ spec:
     - protocol: TCP
       port: 8080
       targetPort: 8080
-      nodePort: 32020
 
 
 

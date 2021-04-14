@@ -99,6 +99,12 @@ Create the name of the persistent volume of the main app
 {{ printf "%s-%s" (include "knowage.fullname" .) "main" }}
 {{- end }}
 
+{{/*
+Create the name of the config map
+*/}}
+{{- define "knowage.config" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "config" }}
+{{- end }}
 
 
 
@@ -240,13 +246,6 @@ Create the name of the secret for the cache database
 {{ printf "%s-%s" (include "knowage.fullname" .) "cache-db-secret" }}
 {{- end }}
 
-{{/*
-Create the name of the config map
-*/}}
-{{- define "knowage.config" -}}
-{{ printf "%s-%s" (include "knowage.fullname" .) "config" }}
-{{- end }}
-
 
 
 {{/*
@@ -277,4 +276,34 @@ Create the name of the pod of the foodmart db
 */}}
 {{- define "knowage.foodmart.pod" -}}
 {{ printf "%s-%s" (include "knowage.fullname" .) "foodmart" }}
+{{- end }}
+
+
+
+{{/*
+Create the name of the service of the reverse proxy
+*/}}
+{{- define "knowage.proxy.service" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "proxy" }}
+{{- end }}
+
+{{/*
+Create the name of the deployment of the reverse proxy
+*/}}
+{{- define "knowage.proxy.deployment" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "proxy" }}
+{{- end }}
+
+{{/*
+Create the name of the pod of the reverse proxy
+*/}}
+{{- define "knowage.proxy.pod" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "proxy" }}
+{{- end }}
+
+{{/*
+Create the name of the reverse proxy
+*/}}
+{{- define "knowage.proxy.config" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "proxy" }}
 {{- end }}
