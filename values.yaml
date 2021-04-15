@@ -14,10 +14,6 @@ knowage:
   # 
   completeExternalUrl: "http://localhost:8080"
 
-  deployIngress: false
-  
-  deployCustomReverseProxy: false
-
   # 
   # Databases properties.
   # 
@@ -37,3 +33,12 @@ knowage:
   # 
   hmac:                     # Optional : random value if not provided 
   passwordEncryptionSecret: # Optional : random value if not provided 
+
+  # 
+  # Technical stuff
+  # 
+  deployIngress: false
+  
+  deployCustomReverseProxy: false
+
+  storageClass: default
