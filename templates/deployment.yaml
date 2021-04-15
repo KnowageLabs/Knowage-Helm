@@ -16,6 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+{{ if eq ( default .Values.knowage.deployCustomReverseProxy false ) true }}
 #  _____  ________      ________ _____   _____ ______   _____  _____   ______   ____     __
 # |  __ \|  ____\ \    / /  ____|  __ \ / ____|  ____| |  __ \|  __ \ / __ \ \ / /\ \   / /
 # | |__) | |__   \ \  / /| |__  | |__) | (___ | |__    | |__) | |__) | |  | \ V /  \ \_/ / 
@@ -65,6 +66,7 @@ spec:
         emptyDir: {}
       - name: cache
         emptyDir: {}
+{{ end }}
 
 #  __  __          _____ _   _            _____  _____  
 # |  \/  |   /\   |_   _| \ | |     /\   |  __ \|  __ \ 

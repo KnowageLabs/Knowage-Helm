@@ -34,6 +34,7 @@ data:
   cacheDbHost: {{ include "knowage.cache.service" . | quote }}
   cacheDbPort: "3306"
 
+{{ if eq ( default .Values.knowage.deployCustomReverseProxy false ) true }}
 #  _____  ________      ________ _____   _____ ______   _____  _____   ______   ____     __
 # |  __ \|  ____\ \    / /  ____|  __ \ / ____|  ____| |  __ \|  __ \ / __ \ \ / /\ \   / /
 # | |__) | |__   \ \  / /| |__  | |__) | (___ | |__    | |__) | |__) | |  | \ V /  \ \_/ / 
@@ -48,58 +49,55 @@ metadata:
   name: {{ include "knowage.proxy.config" . }}
 data:
   nginx.conf: |
-    user nginx;
-    worker_processes  5;
-    error_log  /var/log/nginx/error.log;
+    user nginx ;
+    worker_processes  5 ;
+    error_log  /var/log/nginx/error.log ;
     events {
       worker_connections  10240;
     }
     http {
-      log_format  main
-              'remote_addr:$remote_addr\t'
-              'time_local:$time_local\t'
-              'method:$request_method\t'
-              'uri:$request_uri\t'
-              'host:$host\t'
-              'status:$status\t'
-              'bytes_sent:$body_bytes_sent\t'
-              'referer:$http_referer\t'
-              'useragent:$http_user_agent\t'
-              'forwardedfor:$http_x_forwarded_for\t'
-              'request_time:$request_time';
-      access_log	/var/log/nginx/access.log main;
+      access_log	/var/log/nginx/access.log ;
 
-      proxy_cache_path   /var/cache/nginx levels=1:2 keys_zone=my_cache:10m max_size=9000g inactive=1d ;
+      proxy_cache_path   /var/cache/nginx levels=1:2 keys_zone=static-cache:10m max_size=9000g inactive=1d ;
       proxy_temp_path    /var/cache/nginx/tmp ;
 
       server {
-          listen       80;
-          server_name  {{ include "knowage.proxy.service" . }};
+        listen       80;
+        server_name  {{ include "knowage.proxy.service" . }};
 
-          # Compression
-          gzip on;
-          gzip_types text/plain application/xml text/css image/svg+xml;
-          
-          location / {
-              return 301 http://$host/knowage;
-          }
+        # Compression
+        gzip on;
+        gzip_types text/plain application/xml text/css image/svg+xml;
+        
+        location / {
+          return 301 http://$host/knowage;
+        }
 
-          location /knowage {
-              proxy_cache my_cache ;
-              proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504 ;
+        location /knowage {
+          proxy_cache static-cache ;
+          proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504 ;
 
-              add_header Cache-Control "max-age=2592000 must-revalidate" ;
-              add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" ;
-              add_header X-Content-Type-Options nosniff ;
-              add_header X-Permitted-Cross-Domain-Policies "none" ;
-              add_header Content-Security-Policy "default-src 'none'; connect-src 'self' {{ print .Values.knowage.completeExternalUrl }}; manifest-src 'self' {{ print .Values.knowage.completeExternalUrl }}; object-src 'self' {{ print .Values.knowage.completeExternalUrl }}; frame-src 'self' {{ print .Values.knowage.completeExternalUrl }}; font-src 'self' data:; img-src 'self' data: http://tile.openstreetmap.org  http://*.tile.openstreetmap.org; script-src 'unsafe-eval' 'unsafe-inline' {{ print .Values.knowage.completeExternalUrl }}; script-src-elem 'unsafe-inline' {{ print .Values.knowage.completeExternalUrl }} https://cdnjs.cloudflare.com; style-src 'unsafe-inline' {{ print .Values.knowage.completeExternalUrl }}; style-src-elem 'unsafe-inline' {{ print .Values.knowage.completeExternalUrl }}" ;
-              add_header Referrer-Policy "no-referrer" ;
+          add_header Cache-Control "max-age=2592000 must-revalidate" ;
+          add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" ;
+          add_header X-Content-Type-Options nosniff ;
+          add_header X-Permitted-Cross-Domain-Policies "none" ;
+          add_header Content-Security-Policy "default-src 'none'; connect-src 'self' {{ print .Values.knowage.completeExternalUrl }}; manifest-src 'self' {{ print .Values.knowage.completeExternalUrl }}; object-src 'self' {{ print .Values.knowage.completeExternalUrl }}; frame-src 'self' {{ print .Values.knowage.completeExternalUrl }}; font-src 'self' data:; img-src 'self' data: http://tile.openstreetmap.org  http://*.tile.openstreetmap.org; script-src 'unsafe-eval' 'unsafe-inline' {{ print .Values.knowage.completeExternalUrl }}; script-src-elem 'unsafe-inline' {{ print .Values.knowage.completeExternalUrl }} https://cdnjs.cloudflare.com; style-src 'unsafe-inline' {{ print .Values.knowage.completeExternalUrl }}; style-src-elem 'unsafe-inline' {{ print .Values.knowage.completeExternalUrl }}" ;
+          add_header Referrer-Policy "no-referrer" ;
 
-              proxy_set_header X-Forwarded-Host $host:$server_port;
-              proxy_set_header X-Forwarded-Server $host;
-              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Host $host:$server_port;
+          proxy_set_header X-Forwarded-Server $host;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
-              proxy_pass http://{{ include "knowage.service" . }}:8080;
-          }
+          proxy_pass http://{{ include "knowage.service" . }}:8080;
+        }
+
+        location /knowagewidget {
+          proxy_set_header X-Forwarded-Host $host:$server_port;
+          proxy_set_header X-Forwarded-Server $host;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+          proxy_pass http://{{ include "knowage.python.service" . }}:5000;
+        }
       }
     }
+{{ end }}

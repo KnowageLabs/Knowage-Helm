@@ -14,6 +14,10 @@ knowage:
   # 
   completeExternalUrl: "http://localhost:8080"
 
+  deployIngress: false
+  
+  deployCustomReverseProxy: false
+
   # 
   # Databases properties.
   # 

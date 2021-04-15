@@ -65,6 +65,13 @@ Create the name of the service account to use
 
 
 {{/*
+Create the name of the ingress of the main app
+*/}}
+{{- define "knowage.ingress" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "main" }}
+{{- end }}
+
+{{/*
 Create the name of the service of the main app
 */}}
 {{- define "knowage.service" -}}

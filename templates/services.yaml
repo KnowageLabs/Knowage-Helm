@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-
+{{ if eq ( default .Values.knowage.deployCustomReverseProxy false ) true }}
 #  _____  ________      ________ _____   _____ ______   _____  _____   ______   ____     __
 # |  __ \|  ____\ \    / /  ____|  __ \ / ____|  ____| |  __ \|  __ \ / __ \ \ / /\ \   / /
 # | |__) | |__   \ \  / /| |__  | |__) | (___ | |__    | |__) | |__) | |  | \ V /  \ \_/ / 
@@ -38,6 +38,7 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
+{{ end }}
 
 
 
@@ -54,7 +55,6 @@ kind: Service
 metadata:
   name: {{ include "knowage.service" . }}
 spec:
-  type: LoadBalancer
   selector:
     knowage-suite.com/app: knowage
     {{- include "knowage.selectorLabels" . | nindent 4 }}
