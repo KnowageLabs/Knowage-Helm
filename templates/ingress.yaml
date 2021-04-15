@@ -26,6 +26,8 @@ metadata:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/app-root: "/knowage"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/proxy-buffering: "on"
     # TODO : we cannot do that here
     # nginx.ingress.kubernetes.io/http-snippet: |
@@ -46,9 +48,6 @@ metadata:
       # proxy_cache_bypass $http_x_purge ;
       # add_header X-Cache-Status $upstream_cache_status ;
       
-      # Redirect / to /knowage
-      rewrite ^/$ https://$host/knowage permanent ;
-
       # Reverse proxy header
       proxy_set_header X-Forwarded-Host $host:$server_port;
       proxy_set_header X-Forwarded-Server $host;
