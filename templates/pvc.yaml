@@ -34,7 +34,7 @@ spec:
   resources:
     requests:
       storage: 10Gi
-  storageClassName: {{ default .Values.knowage.storageClass "default" | quote }}
+  storageClassName: {{ default "default" .Values.knowage.storageClass  | quote }}
 
 
 
@@ -56,7 +56,7 @@ spec:
   resources:
     requests:
       storage: 10Gi
-  storageClassName: {{ default .Values.knowage.storageClass "default" | quote }}
+  storageClassName: {{ default "default" .Values.knowage.storageClass  | quote }}
 
 
 #   _____          _____ _    _ ______   _____  ____  
@@ -77,4 +77,4 @@ spec:
   resources:
     requests:
       storage: 10Gi
-  storageClassName: {{ default .Values.knowage.storageClass "default" | quote }}
+  storageClassName: {{ default "default" .Values.knowage.storageClass  | quote }}
