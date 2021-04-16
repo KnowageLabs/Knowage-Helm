@@ -42,3 +42,10 @@ knowage:
   deployCustomReverseProxy: false
 
   storageClass: default
+
+  # 
+  # Let the user uses a custom image.
+  # 
+  # Empty for default.
+  # 
+  customImageName:

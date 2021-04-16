@@ -94,7 +94,7 @@ spec:
     spec:
       containers:
       - name: {{ include "knowage.pod" . }}
-        image: "knowagelabs/knowage-server-docker:{{ .Values.knowage.tag }}"
+        image: {{ printf "%s:%s" ( default "knowagelabs/knowage-server-docker" .Values.knowage.customImageName ) .Values.knowage.tag | quote }}
         imagePullPolicy: IfNotPresent
         env:
           - name: DB_USER
