@@ -63,6 +63,20 @@ Create the name of the service account to use
 
 
 
+{{- define "knowage.domain" -}}
+{{- regexReplaceAll "/.+$" ( regexReplaceAll "^https://" .Values.knowage.completeExternalUrl "" ) "" -}}
+{{- end -}}
+
+
+
+{{/*
+Create the name of the TLS certificate
+*/}}
+{{- define "knowage.tls" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "tls" }}
+{{- end }}
+
+
 
 {{/*
 Create the name of the ingress of the main app

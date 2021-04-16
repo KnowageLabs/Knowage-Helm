@@ -23,6 +23,11 @@ You've selected to deploy a database with sample data, remember to create a data
  * Driver: com.mysql.jdbc.Driver
 {{- end }}
 
-{{ if eq ( default .Values.knowage.deployIngress false ) true -}}See {{ include "knowage.ingress" . | quote }} for the ingress.{{ end }}
+{{ if eq ( default .Values.knowage.deployIngress false ) true -}}
+See {{ include "knowage.ingress" . | quote }} for the ingress.
+
+Remember to provide a secret for TLS using the command:
+ $ kubectl create secret tls {{ include "knowage.tls" . }} --key privekey.pem --cert cert.pem
+{{- end }}
 
 {{ if eq ( default .Values.knowage.deployIngress false ) true -}}See {{ include "knowage.proxy.service" . | quote }} service for the internal reverse proxy.{{ end }}

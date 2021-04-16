@@ -28,6 +28,8 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/app-root: "/knowage"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "route"
     nginx.ingress.kubernetes.io/proxy-buffering: "on"
     # TODO : we cannot do that here
     # nginx.ingress.kubernetes.io/http-snippet: |
@@ -62,7 +64,8 @@ metadata:
       add_header Referrer-Policy "no-referrer" ;
 spec:
   rules:
-  - http:
+  - host: {{ include "knowage.domain" . }}
+    http:
       paths:
       - backend:
           serviceName: {{ include "knowage.service" . }}
@@ -72,4 +75,8 @@ spec:
           serviceName: {{ include "knowage.python.service" . }}
           servicePort: 5000
         path: /knowagewidget
+  tls:
+    - hosts:
+      - {{ include "knowage.domain" . }}
+      secretName: {{ include "knowage.tls" . }}
 {{ end }}
