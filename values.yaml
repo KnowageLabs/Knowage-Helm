@@ -49,3 +49,7 @@ knowage:
   # Empty for default.
   # 
   customImageName:
+
+  # 
+  # Pull secret for private registry when using custom images
+  imagePullSecret:

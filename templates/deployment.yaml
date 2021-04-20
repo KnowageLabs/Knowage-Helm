@@ -180,6 +180,10 @@ spec:
         volumeMounts:
         - name: resources
           mountPath: /home/knowage/apache-tomcat/resources
+      {{ if .Values.knowage.imagePullSecret -}}
+      imagePullSecrets:
+      - name: {{ print .Values.knowage.imagePullSecret | quote }}
+      {{- end}}
       volumes:
       - name: resources
         persistentVolumeClaim:
