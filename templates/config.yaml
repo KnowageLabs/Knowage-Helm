@@ -77,11 +77,13 @@ data:
           proxy_cache static-cache ;
           proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504 ;
 
-          add_header Cache-Control "max-age=2592000 must-revalidate" ;
+          proxy_hide_header Strict-Transport-Security;
+
+          add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0' ;
           add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" ;
           add_header X-Content-Type-Options nosniff ;
           add_header X-Permitted-Cross-Domain-Policies "none" ;
-          add_header Content-Security-Policy "default-src 'self'; connect-src 'self'; manifest-src 'self'; object-src 'self'; frame-src 'self'; font-src 'self' data:; img-src 'self' data: http://tile.openstreetmap.org  http://*.tile.openstreetmap.org; script-src 'self' 'unsafe-eval' 'unsafe-inline'; script-src-elem 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'" ;
+          add_header Content-Security-Policy "default-src 'self'; connect-src 'self'; manifest-src 'self'; object-src 'self'; frame-src 'self' blob:; font-src 'self' data:; img-src 'self' data: http://tile.openstreetmap.org  http://*.tile.openstreetmap.org; script-src 'self' 'unsafe-eval' 'unsafe-inline'; script-src-elem 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'" ;
           add_header Referrer-Policy "no-referrer" ;
 
           proxy_set_header X-Forwarded-Host $host:$server_port;

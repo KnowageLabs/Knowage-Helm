@@ -22,6 +22,14 @@ $ helm install -f myvals.yaml my-chart-name .
 
 Where ```myvals.yaml``` is a copy of ```values.yaml``` where you could put the data of your installation.
 
+To update your deployment you should use:
+
+```console
+$ helm upgrade -f myvals.yaml my-chart-name .
+```
+
+Where ```myvals.yaml``` is a copy of ```values.yaml``` where you could put the data of your installation.
+
 To uninstall the chart you could use:
 
 ```console
