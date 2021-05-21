@@ -33,6 +33,60 @@ data:
   dbPort: "3306"
   cacheDbHost: {{ include "knowage.cache.service" . | quote }}
   cacheDbPort: "3306"
+  extGlobalResources: |
+    {{- if .Values.knowage.extGlobalResources -}}
+    {{- print .Values.knowage.extGlobalResources | nindent 4 -}}
+    {{ else }}
+    <!-- 
+        Resources from server.xml.d/extGlobalRerouces.
+        
+        Copy the template from Knowage-Server-Docker/extGlobalRerouces, edit it and mount it as:
+        
+            /home/knowage/apache-tomcat/conf/server.xml.d/extGlobalRerouces
+        
+        To customize your server.xml with your resources. For example, you can
+        add all the JDBC connections you need.
+    -->
+
+    <!-- <Resource
+        auth="Container"
+        driverClassName="com.mysql.jdbc.Driver"
+        logAbandoned="true"
+        maxActive="20"
+        maxIdle="4"
+        maxWait="300"
+        minEvictableIdleTimeMillis="60000"
+        name="jdbc/foodmart"
+        password="foodmart"
+        removeAbandoned="true"
+        removeAbandonedTimeout="3600"
+        testOnReturn="true"
+        testWhileIdle="true"
+        timeBetweenEvictionRunsMillis="10000"
+        type="javax.sql.DataSource"
+        url="jdbc:mysql://foodmart:3306/foodmart"
+        username="foodmart"/> -->
+    {{- end }}
+  extContext: |
+    {{- if .Values.knowage.extContext -}}
+    {{- print .Values.knowage.extContext | nindent 4 -}}
+    {{ else }}
+    <!-- 
+        Resource links from context.xml.d/extContext.
+        
+        Copy the template from Knowage-Server-Docker/extContext, edit it and mount it as:
+        
+            /home/knowage/apache-tomcat/conf/context.xml.d/extContext
+        
+        To customize your context.xml with your resource links. For example, you can
+        link all the JDBC connections you put into server.xml.d/extGlobalResources.
+    -->
+
+    <!-- <ResourceLink
+      global="jdbc/foodmart"
+      name="jdbc/foodmart"
+      type="javax.sql.DataSource" /> -->
+    {{- end }}
 
 {{ if eq ( default .Values.knowage.deployCustomReverseProxy false ) true }}
 #  _____  ________      ________ _____   _____ ______   _____  _____   ______   ____     __
