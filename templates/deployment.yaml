@@ -77,10 +77,11 @@ spec:
 #                                                       
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "knowage.deployment" . }}
 spec:
+  serviceName: "knowage-main"
   replicas: 1
   selector:
     matchLabels:
@@ -180,6 +181,10 @@ spec:
         volumeMounts:
         - name: resources
           mountPath: /home/knowage/apache-tomcat/resources
+        - name: ext-global-resources
+          mountPath: /home/knowage/apache-tomcat/conf/server.xml.d
+        - name: ext-context
+          mountPath: /home/knowage/apache-tomcat/conf/context.xml.d
       {{ if .Values.knowage.imagePullSecret -}}
       imagePullSecrets:
       - name: {{ print .Values.knowage.imagePullSecret | quote }}
@@ -188,6 +193,19 @@ spec:
       - name: resources
         persistentVolumeClaim:
           claimName: {{ include "knowage.pvc" . }}
+      - name: ext-global-resources
+        configMap:
+          name: {{ include "knowage.config" . }}
+          items:
+            - key: extGlobalResources
+              path: extGlobalResources
+      - name: ext-context
+        configMap:
+          name: {{ include "knowage.config" . }}
+          items:
+            - key: extContext
+              path: extContext
+
 
 
 
