@@ -24,31 +24,17 @@ metadata:
   name: {{ include "knowage.ingress" . }}
   annotations:
     kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/app-root: "/knowage"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/affinity: "cookie"
     nginx.ingress.kubernetes.io/session-cookie-name: "route"
     nginx.ingress.kubernetes.io/proxy-buffering: "on"
-    # TODO : we cannot do that here
-    # nginx.ingress.kubernetes.io/http-snippet: |
-    #   proxy_cache_path /tmp/nginx-cache levels=1:2 keys_zone=static-cache:2m max_size=100m inactive=7d use_temp_path=off;
-    #   proxy_cache_key $scheme$proxy_host$request_uri;
-    #   proxy_cache_lock on;
-    #   proxy_cache_use_stale updating;
     nginx.ingress.kubernetes.io/configuration-snippet: |
       # Compression
       gzip on;
       gzip_types text/plain application/xml text/css image/svg+xml;
-
-      # TODO
-      # # Cache
-      # proxy_cache static-cache ;
-      # proxy_cache_valid 404 1m ;
-      # proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504 ;
-      # proxy_cache_bypass $http_x_purge ;
-      # add_header X-Cache-Status $upstream_cache_status ;
 
       # Reverse proxy header
       proxy_set_header X-Forwarded-Host $host:$server_port;
@@ -56,7 +42,6 @@ metadata:
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
       # Security header
-
       # WARNING: actually, a bug send also another Strict-Transport-Security but the following is the correct one
       add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" ;
       add_header X-Content-Type-Options nosniff ;
@@ -69,13 +54,13 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: {{ include "knowage.service" . }}
-          servicePort: 8080
-        path: /knowage
-      - backend:
           serviceName: {{ include "knowage.python.service" . }}
           servicePort: 5000
         path: /knowagewidget
+      - backend:
+          serviceName: {{ include "knowage.service" . }}
+          servicePort: 8080
+        path: /knowage
   tls:
     - hosts:
       - {{ include "knowage.domain" . }}
