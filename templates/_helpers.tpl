@@ -328,3 +328,33 @@ Create the name of the reverse proxy
 {{- define "knowage.proxy.config" -}}
 {{ printf "%s-%s" (include "knowage.fullname" .) "proxy" }}
 {{- end }}
+
+
+
+{{/*
+Create the name of the service of Hazelcast
+*/}}
+{{- define "knowage.hazelcast.service" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "hazelcast" }}
+{{- end }}
+
+{{/*
+Create the name of the deployment of Hazelcast
+*/}}
+{{- define "knowage.hazelcast.deployment" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "hazelcast" }}
+{{- end }}
+
+{{/*
+Create the name of the pod of Hazelcast
+*/}}
+{{- define "knowage.hazelcast.pod" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "hazelcast" }}
+{{- end }}
+
+{{/*
+Create the name of the config of Hazelcast
+*/}}
+{{- define "knowage.hazelcast.config" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "hazelcast" }}
+{{- end }}

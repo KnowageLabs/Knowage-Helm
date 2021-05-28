@@ -82,7 +82,7 @@ metadata:
   name: {{ include "knowage.deployment" . }}
 spec:
   serviceName: "knowage-main"
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       knowage-suite.com/app: knowage
@@ -160,6 +160,8 @@ spec:
               secretKeyRef:
                 name: {{ include "knowage.secret" . }}
                 key: passwordEncryptionSecret
+          - name: HAZELCAST_HOSTS
+            value: {{ include "knowage.hazelcast.service" . }}
         livenessProbe:
           httpGet:
             path: /knowage/restful-services/version
@@ -454,6 +456,7 @@ spec:
 
 
 
+---
 #  _____  
 # |  __ \ 
 # | |__) |
@@ -461,7 +464,6 @@ spec:
 # | | \ \ 
 # |_|  \_\
 #         
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -506,3 +508,52 @@ spec:
           - name: main
             containerPort: 5001
             protocol: TCP
+
+
+
+#  _    _           ____________ _      _____           _____ _______ 
+# | |  | |   /\    |___  /  ____| |    / ____|   /\    / ____|__   __|
+# | |__| |  /  \      / /| |__  | |   | |       /  \  | (___    | |   
+# |  __  | / /\ \    / / |  __| | |   | |      / /\ \  \___ \   | |   
+# | |  | |/ ____ \  / /__| |____| |___| |____ / ____ \ ____) |  | |   
+# |_|  |_/_/    \_\/_____|______|______\_____/_/    \_\_____/   |_|   
+#                                                                     
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "knowage.hazelcast.deployment" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      knowage-suite.com/app: hazelcast
+      {{- include "knowage.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        knowage-suite.com/app: hazelcast
+        {{- include "knowage.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ include "knowage.hazelcast.pod" . }}
+        image: "hazelcast/hazelcast:3.6.5"
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: JAVA_OPTS
+            value: -Dhazelcast.local.publicAddress={{ include "knowage.hazelcast.service" . }} -Dhazelcast.config=/opt/hazelcast/hazelcast.xml
+        ports:
+          - name: main
+            containerPort: 5701
+            protocol: TCP
+        volumeMounts:
+        - name: hazelcast-server-xml
+          mountPath: /opt/hazelcast/hazelcast.xml
+          subPath: hazelcast.xml
+      volumes:
+      - name: hazelcast-server-xml
+        configMap:
+          name: {{ include "knowage.hazelcast.config" . }}
+          items:
+            - key: hazelcast.xml
+              path: hazelcast.xml

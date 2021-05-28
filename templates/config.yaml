@@ -157,3 +157,37 @@ data:
       }
     }
 {{ end }}
+
+#  _    _           ____________ _      _____           _____ _______ 
+# | |  | |   /\    |___  /  ____| |    / ____|   /\    / ____|__   __|
+# | |__| |  /  \      / /| |__  | |   | |       /  \  | (___    | |   
+# |  __  | / /\ \    / / |  __| | |   | |      / /\ \  \___ \   | |   
+# | |  | |/ ____ \  / /__| |____| |___| |____ / ____ \ ____) |  | |   
+# |_|  |_/_/    \_\/_____|______|______\_____/_/    \_\_____/   |_|   
+#                                                                     
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "knowage.hazelcast.config" . }}
+data:
+  hazelcast.xml: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.6.xsd"
+              xmlns="http://www.hazelcast.com/schema/config"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <network>
+            <port auto-increment="false" port-count="100">5701</port>
+            <join>
+                <multicast enabled="false"></multicast>
+                <tcp-ip enabled="true">
+                    <member-list>
+          <member>hazelcast</member>
+        </member-list>
+                </tcp-ip>
+            </join>
+        </network>
+        <properties> 
+          <property name="hazelcast.socket.bind.any">false</property>
+        </properties>
+    </hazelcast>

@@ -179,3 +179,26 @@ spec:
     - protocol: TCP
       port: 5001
       targetPort: 5001
+
+
+
+#  _    _           ____________ _      _____           _____ _______ 
+# | |  | |   /\    |___  /  ____| |    / ____|   /\    / ____|__   __|
+# | |__| |  /  \      / /| |__  | |   | |       /  \  | (___    | |   
+# |  __  | / /\ \    / / |  __| | |   | |      / /\ \  \___ \   | |   
+# | |  | |/ ____ \  / /__| |____| |___| |____ / ____ \ ____) |  | |   
+# |_|  |_/_/    \_\/_____|______|______\_____/_/    \_\_____/   |_|   
+#                                                                     
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "knowage.hazelcast.service" . }}
+spec:
+  selector:
+    knowage-suite.com/app: hazelcast
+    {{- include "knowage.selectorLabels" . | nindent 4 }}
+  ports:
+    - protocol: TCP
+      port: 5701
+      targetPort: 5701
