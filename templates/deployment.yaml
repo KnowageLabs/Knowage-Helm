@@ -183,6 +183,9 @@ spec:
         volumeMounts:
         - name: resources
           mountPath: /home/knowage/apache-tomcat/resources
+        - name: services-whitelist
+          mountPath: /home/knowage/apache-tomcat/resources/services-whitelist.xml
+          subPath: services-whitelist.xml
         - name: ext-global-resources
           mountPath: /home/knowage/apache-tomcat/conf/server.xml.d
         - name: ext-context
@@ -195,6 +198,12 @@ spec:
       - name: resources
         persistentVolumeClaim:
           claimName: {{ include "knowage.pvc" . }}
+      - name: services-whitelist
+        configMap:
+          name: {{ include "knowage.config" . }}
+          items:
+            - key: servicesWhitelist
+              path: services-whitelist.xml
       - name: ext-global-resources
         configMap:
           name: {{ include "knowage.config" . }}

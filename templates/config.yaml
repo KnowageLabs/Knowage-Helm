@@ -33,6 +33,22 @@ data:
   dbPort: "3306"
   cacheDbHost: {{ include "knowage.cache.service" . | quote }}
   cacheDbPort: "3306"
+  servicesWhitelist: |
+    {{- if .Values.knowage.whitelist -}}
+    {{- print .Values.knowage.whitelist | nindent 4 -}}
+    {{ else }}
+    <?xml version="1.0" encoding="UTF-8"?>
+    <WHITELIST>
+            <service baseurl="https://www.youtube.com" />
+            <service baseurl="https://vimeo.com" />
+            <service baseurl="https://www.flickr.com" />
+            <service baseurl="https://fonts.googleapis.com" />
+            <service baseurl="https://code.highcharts.com" />
+            <service relativepath="/knowage/themes/" />
+            <service relativepath="/knowage/icons/" />
+            <service relativepath="/knowage/dashboards/" />
+    </WHITELIST>
+    {{- end }}
   extGlobalResources: |
     {{- if .Values.knowage.extGlobalResources -}}
     {{- print .Values.knowage.extGlobalResources | nindent 4 -}}

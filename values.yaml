@@ -52,4 +52,21 @@ knowage:
 
   # 
   # Pull secret for private registry when using custom images
+  #
   imagePullSecret:
+
+  # 
+  # Content of the services-whitelist.xml inside "/home/knowage/apache-tomcat/resources", for example:
+  # 
+  #   <WHITELIST>
+  #           <service baseurl="https://www.youtube.com" />
+  #           <service baseurl="https://vimeo.com" />
+  #           <service baseurl="https://www.flickr.com" />
+  #           <service baseurl="https://fonts.googleapis.com" />
+  #           <service baseurl="https://code.highcharts.com" />
+  #           <service relativepath="/knowage/themes/" />
+  #           <service relativepath="/knowage/icons/" />
+  #           <service relativepath="/knowage/dashboards/" />
+  #   </WHITELIST>
+  # 
+  whitelist:
