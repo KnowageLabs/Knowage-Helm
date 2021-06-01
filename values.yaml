@@ -70,3 +70,21 @@ knowage:
   #   </WHITELIST>
   # 
   whitelist:
+
+  # 
+  # Content of the services-whitelist.xml inside "/home/knowage/apache-tomcat/resources", for example:
+  # 
+  #   <?xml version="1.0" encoding="UTF-8"?>
+  #   <tomcat-users xmlns="http://tomcat.apache.org/xml"
+  #                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  #                 xsi:schemaLocation="http://tomcat.apache.org/xml tomcat-users.xsd"
+  #                 version="1.0">
+  #
+  #     <role rolename="tomcat"/>
+  #     <role rolename="role1"/>
+  #     <user username="tomcat" password="<must-be-changed>" roles="tomcat"/>
+  #     <user username="both" password="<must-be-changed>" roles="tomcat,role1"/>
+  #     <user username="role1" password="<must-be-changed>" roles="role1"/>
+  # 
+  #   </tomcat-users>
+  tomcatUsers:

@@ -49,6 +49,17 @@ data:
             <service relativepath="/knowage/dashboards/" />
     </WHITELIST>
     {{- end }}
+  tomcatUsers: |
+    {{- if .Values.knowage.tomcatUsers -}}
+    {{- print .Values.knowage.tomcatUsers | nindent 4 -}}
+    {{ else }}
+    <?xml version="1.0" encoding="UTF-8"?>
+    <tomcat-users xmlns="http://tomcat.apache.org/xml"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://tomcat.apache.org/xml tomcat-users.xsd"
+                  version="1.0">
+    </tomcat-users>
+    {{- end }}
   extGlobalResources: |
     {{- if .Values.knowage.extGlobalResources -}}
     {{- print .Values.knowage.extGlobalResources | nindent 4 -}}

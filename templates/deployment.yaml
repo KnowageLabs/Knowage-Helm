@@ -191,6 +191,9 @@ spec:
         - name: services-whitelist
           mountPath: /home/knowage/apache-tomcat/resources/services-whitelist.xml
           subPath: services-whitelist.xml
+        - name: tomcat-users
+          mountPath: /home/knowage/apache-tomcat/conf/tomcat-users.xml
+          subPath: tomcat-users.xml
         - name: ext-global-resources
           mountPath: /home/knowage/apache-tomcat/conf/server.xml.d
         - name: ext-context
@@ -209,6 +212,12 @@ spec:
           items:
             - key: servicesWhitelist
               path: services-whitelist.xml
+      - name: tomcat-users
+        configMap:
+          name: {{ include "knowage.config" . }}
+          items:
+            - key: tomcatUsers
+              path: tomcat-users.xml
       - name: ext-global-resources
         configMap:
           name: {{ include "knowage.config" . }}
