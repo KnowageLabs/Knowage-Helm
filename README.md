@@ -78,6 +78,7 @@ data:
   proxy-connect-timeout: '10'
   proxy-read-timeout: '60'
   proxy-send-timeout: '60'
+  proxy-body-size: '250m'
 ```
 
 ## License
