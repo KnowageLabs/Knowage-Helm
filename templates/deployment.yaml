@@ -82,7 +82,7 @@ metadata:
   name: {{ include "knowage.deployment" . }}
 spec:
   serviceName: "knowage-main"
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       knowage-suite.com/app: knowage
@@ -180,6 +180,11 @@ spec:
           - name: main
             containerPort: 8080
             protocol: TCP
+        resources:
+          requests:
+            cpu: 1
+          limits:
+            cpu: 1
         volumeMounts:
         - name: resources
           mountPath: /home/knowage/apache-tomcat/resources
