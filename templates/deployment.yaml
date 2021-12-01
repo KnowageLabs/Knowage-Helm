@@ -454,10 +454,6 @@ spec:
               secretKeyRef:
                 name: {{ include "knowage.secret" . }}
                 key: hmac
-          - name: KNOWAGE_PUBLIC_ADDRESS
-            value: {{ include "knowage.service" . }}
-          - name: PUBLIC_ADDRESS
-            value: {{ include "knowage.python.service" . }}
         livenessProbe:
           httpGet:
             path: /dataset/libraries
