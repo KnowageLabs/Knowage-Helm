@@ -358,3 +358,9 @@ Create the name of the config of Hazelcast
 {{- define "knowage.hazelcast.config" -}}
 {{ printf "%s-%s" (include "knowage.fullname" .) "hazelcast" }}
 {{- end }}
+
+{{ default true    .Values.knowage.installSampleData }}
+{{ default true    .Values.knowage.deployMetadataDb }}
+{{ default true    .Values.knowage.deployCacheDb }}
+{{ default false   .Values.knowage.deployIngress }}
+{{ default false   .Values.knowage.deployCustomReverseProxy }}

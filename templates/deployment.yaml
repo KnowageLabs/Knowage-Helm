@@ -234,6 +234,7 @@ spec:
 
 
 
+{{ if .Values.knowage.deployMetadataDb }}
 #  __  __           _____ _______ ______ _____    _____  ____  
 # |  \/  |   /\    / ____|__   __|  ____|  __ \  |  __ \|  _ \ 
 # | \  / |  /  \  | (___    | |  | |__  | |__) | | |  | | |_) |
@@ -303,8 +304,10 @@ spec:
       - name: data
         persistentVolumeClaim:
           claimName: {{ include "knowage.db.pvc" . }}
+{{ end }}
 
 
+{{ if .Values.knowage.deployCacheDb }}
 #   _____          _____ _    _ ______   _____  ____  
 #  / ____|   /\   / ____| |  | |  ____| |  __ \|  _ \ 
 # | |       /  \ | |    | |__| | |__    | |  | | |_) |
@@ -374,6 +377,7 @@ spec:
       - name: data
         persistentVolumeClaim:
           claimName: {{ include "knowage.cache.pvc" . }}
+{{ end }}
 
 
 

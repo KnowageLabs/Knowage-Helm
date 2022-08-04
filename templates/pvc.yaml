@@ -30,14 +30,15 @@ metadata:
   name: {{ include "knowage.pvc" . }}
 spec:
   accessModes:
-  - ReadWriteOnce
+  - ReadWriteMany
   resources:
     requests:
       storage: 10Gi
-  storageClassName: {{ default "default" .Values.knowage.storageClass  | quote }}
+  volumeName: {{ include "knowage.volume" . }}
 
 
 
+{{ if .Values.knowage.deployMetadataDb }}
 #  __  __           _____ _______ ______ _____    _____  ____  
 # |  \/  |   /\    / ____|__   __|  ____|  __ \  |  __ \|  _ \ 
 # | \  / |  /  \  | (___    | |  | |__  | |__) | | |  | | |_) |
@@ -56,9 +57,11 @@ spec:
   resources:
     requests:
       storage: 10Gi
-  storageClassName: {{ default "default" .Values.knowage.storageClass  | quote }}
+  volumeName: {{ include "knowage.db.volume" . }}
+{{ end }}
 
 
+{{ if .Values.knowage.deployCacheDb }}
 #   _____          _____ _    _ ______   _____  ____  
 #  / ____|   /\   / ____| |  | |  ____| |  __ \|  _ \ 
 # | |       /  \ | |    | |__| | |__    | |  | | |_) |
@@ -77,4 +80,5 @@ spec:
   resources:
     requests:
       storage: 10Gi
-  storageClassName: {{ default "default" .Values.knowage.storageClass  | quote }}
+  volumeName: {{ include "knowage.cache.volume" . }}
+{{ end }}
