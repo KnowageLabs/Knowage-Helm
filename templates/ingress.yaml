@@ -18,7 +18,7 @@
 
 {{ if eq ( default .Values.knowage.deployIngress false ) true }}
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "knowage.ingress" . }}
@@ -61,13 +61,19 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: {{ include "knowage.python.service" . }}
-          servicePort: 5000
+          service:
+            name: {{ include "knowage.python.service" . }}
+            port:
+              number: 5000
         path: /knowagewidget
+        pathType: Prefix
       - backend:
-          serviceName: {{ include "knowage.service" . }}
-          servicePort: 8080
+          service:
+            name: {{ include "knowage.service" . }}
+            port:
+              number: 8080
         path: /knowage
+        pathType: Prefix
   tls:
     - hosts:
       - {{ include "knowage.domain" . }}

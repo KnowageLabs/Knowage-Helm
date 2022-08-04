@@ -37,11 +37,13 @@ knowage:
   # 
   # Technical stuff
   # 
+  deployMetadataDb: true
+  
+  deployCacheDb: true
+  
   deployIngress: false
   
   deployCustomReverseProxy: false
-
-  storageClass: default
 
   # 
   # Let the user uses a custom image.
