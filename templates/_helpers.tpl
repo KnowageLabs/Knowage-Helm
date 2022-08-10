@@ -364,3 +364,19 @@ Create the name of the config of Hazelcast
 {{ default true    .Values.knowage.deployCacheDb }}
 {{ default false   .Values.knowage.deployIngress }}
 {{ default false   .Values.knowage.deployCustomReverseProxy }}
+
+{{- define "knowage.db.port" -}}
+{{- if .Values.knowage.deployMetadataDb }}
+{{- print 3306 }}
+{{- else }}
+{{- print .Values.knowage.db.port }}
+{{- end}}
+{{- end}}
+
+{{- define "knowage.cache.port" -}}
+{{- if .Values.knowage.deployCacheDb }}
+{{- print 3306 }}
+{{- else }}
+{{- print .Values.knowage.cache.port }}
+{{- end}}
+{{- end}}

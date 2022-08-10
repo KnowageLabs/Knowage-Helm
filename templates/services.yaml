@@ -64,8 +64,12 @@ spec:
       targetPort: 8080
 
 
-
-{{ if .Values.knowage.deployMetadataDb }}
+{{- if and (eq .Values.knowage.deployMetadataDb false) (empty .Values.knowage.db.host) }}
+{{- fail "A host name for metadata DB (knowage.db.host) is expected" }}
+{{- end }}
+{{- if and (eq .Values.knowage.deployMetadataDb false) (empty .Values.knowage.db.port) }}
+{{- fail "A port for metadata DB (knowage.db.port) is expected" }}
+{{- end }}
 #  __  __           _____ _______ ______ _____    _____  ____  
 # |  \/  |   /\    / ____|__   __|  ____|  __ \  |  __ \|  _ \ 
 # | \  / |  /  \  | (___    | |  | |__  | |__) | | |  | | |_) |
@@ -79,18 +83,26 @@ kind: Service
 metadata:
   name: {{ include "knowage.db.service" . }}
 spec:
-  selector:
-    knowage-suite.com/app: knowagedb
-    {{- include "knowage.selectorLabels" . | nindent 4 }}
+{{- if .Values.knowage.deployMetadataDb }}
   ports:
     - protocol: TCP
       port: 3306
       targetPort: 3306
+  selector:
+    knowage-suite.com/app: knowagedb
+    {{- include "knowage.selectorLabels" . | nindent 4 }}
+  type: ClusterIP
+{{- else }}
+  externalName: {{ print .Values.knowage.db.host | quote }}
+  type: ExternalName
 {{ end }}
 
-
-
-{{ if .Values.knowage.deployCacheDb }}
+{{- if and (eq .Values.knowage.deployCacheDb false) (empty .Values.knowage.cache.host) }}
+{{- fail "A host name for cache DB (knowage.cache.host) is expected" }}
+{{- end }}
+{{- if and (eq .Values.knowage.deployCacheDb false) (empty .Values.knowage.cache.port) }}
+{{- fail "A port for cache DB (knowage.cache.port) is expected" }}
+{{- end }}
 #   _____          _____ _    _ ______   _____  ____  
 #  / ____|   /\   / ____| |  | |  ____| |  __ \|  _ \ 
 # | |       /  \ | |    | |__| | |__    | |  | | |_) |
@@ -104,18 +116,22 @@ kind: Service
 metadata:
   name: {{ include "knowage.cache.service" . }}
 spec:
-  selector:
-    knowage-suite.com/app: knowagecachedb
-    {{- include "knowage.selectorLabels" . | nindent 4 }}
+{{- if .Values.knowage.deployCacheDb }}
   ports:
     - protocol: TCP
       port: 3306
       targetPort: 3306
+  selector:
+    knowage-suite.com/app: knowagecachedb
+    {{- include "knowage.selectorLabels" . | nindent 4 }}
+{{- else }}
+  externalName: {{ print .Values.knowage.cache.host | quote }}
+  type: ExternalName
 {{ end }}
 
 
 
-{{ if eq ( default .Values.knowage.installSampleData false ) true }}
+{{- if eq ( default .Values.knowage.installSampleData false ) true }}
 #  ______ ____   ____  _____  __  __          _____ _______ 
 # |  ____/ __ \ / __ \|  __ \|  \/  |   /\   |  __ \__   __|
 # | |__ | |  | | |  | | |  | | \  / |  /  \  | |__) | | |   

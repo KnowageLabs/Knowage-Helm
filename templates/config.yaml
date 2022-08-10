@@ -30,9 +30,9 @@ metadata:
   name: {{ include "knowage.config" . }}
 data:
   dbHost: {{ include "knowage.db.service" . | quote }}
-  dbPort: "3306"
+  dbPort: {{ include "knowage.db.port" . | quote }}
   cacheDbHost: {{ include "knowage.cache.service" . | quote }}
-  cacheDbPort: "3306"
+  cacheDbPort: {{ include "knowage.cache.port" . | quote }}
   servicesWhitelist: |
     {{- if .Values.knowage.whitelist -}}
     {{- print .Values.knowage.whitelist | nindent 4 -}}
