@@ -18,15 +18,15 @@ knowage:
   # Databases properties.
   # 
   db:
-    host:
-    port:
+    host:     # Needed if you use external DB
+    port:     # Needed if you use external DB
     user:     "knowage"
     pass:     # Optional : random value if not provided 
     rootPass: # Optional : random value if not provided 
     name:     "knowage_master"
   cache:
-    host:
-    port:
+    host:     # Needed if you use external DB
+    port:     # Needed if you use external DB
     user:     "knowage"
     pass:     # Optional : random value if not provided 
     rootPass: # Optional : random value if not provided 
