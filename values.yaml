@@ -1,7 +1,5 @@
 knowage:
 
-  tag: 8.1
-
   # 
   # Install a db with sample data
   # 
