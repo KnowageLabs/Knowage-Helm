@@ -1,0 +1,79 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    "helm.sh/hook": post-delete,post-upgrade
+    "helm.sh/hook-weight": "100"
+    "helm.sh/hook-delete-policy": hook-succeeded
+  labels:
+      knowage-suite.com/app: unrelate-pvc-from-pv
+      {{- include "knowage.selectorLabels" . | nindent 6 }}
+  name: unrelate-pvc-from-pv
+  namespace: {{ .Release.Namespace }}
+spec:
+  template:
+    metadata:
+      name: unrelate-pvc-from-pv
+      labels:
+        knowage-suite.com/app: unrelate-pvc-from-pv
+        {{- include "knowage.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: main
+        image: "bitnami/kubectl"
+        command:
+        - kubectl
+        - patch
+        - pv
+        - {{ include "knowage.volume" . }}
+        - --type
+        - json
+        - -p
+        - '[{"op": "remove", "path": "/spec/claimRef"}]'
+      restartPolicy: Never
+      serviceAccountName: "unrelate-pvc-from-pv-sa"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    "helm.sh/hook": post-delete,post-upgrade
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": hook-succeeded
+  name: unrelate-pvc-from-pv-sa
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    "helm.sh/hook": post-delete,post-upgrade
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": hook-succeeded
+  name: unrelate-pvc-from-pv-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumes
+  verbs:
+  - get
+  - update
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    "helm.sh/hook": post-delete,post-upgrade
+    "helm.sh/hook-weight": "20"
+    "helm.sh/hook-delete-policy": hook-succeeded
+  name: unrelate-pvc-from-pv-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: unrelate-pvc-from-pv-role
+subjects:
+- kind: ServiceAccount
+  name: unrelate-pvc-from-pv-sa
+  namespace: {{ .Release.Namespace }}
