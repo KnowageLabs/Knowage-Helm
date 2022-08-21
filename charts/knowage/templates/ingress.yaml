@@ -21,7 +21,6 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "knowage.ingress" . }}
   annotations:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -55,6 +54,8 @@ metadata:
       add_header X-Permitted-Cross-Domain-Policies "none" ;
       add_header Content-Security-Policy "default-src 'self'; connect-src 'self' https://login.microsoftonline.com; manifest-src 'self'; object-src 'self'; frame-src 'self' blob: data:; font-src 'self' data:; img-src 'self' blob: data: http://tile.openstreetmap.org  http://*.tile.openstreetmap.org http://www.gravatar.com; script-src 'self' 'unsafe-eval' 'unsafe-inline'; script-src-elem 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://alcdn.msauth.net; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'" ;
       add_header Referrer-Policy "no-referrer" ;
+  name: {{ include "knowage.ingress" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   rules:
   - host: {{ include "knowage.domain" . }}

@@ -28,6 +28,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ include "knowage.pvc" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   accessModes:
   - ReadWriteMany
@@ -52,6 +53,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ include "knowage.db.pvc" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   accessModes:
   - ReadWriteOnce
@@ -75,6 +77,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ include "knowage.cache.pvc" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   accessModes:
   - ReadWriteOnce

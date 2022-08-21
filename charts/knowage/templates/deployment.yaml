@@ -29,6 +29,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "knowage.proxy.deployment" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
@@ -80,6 +81,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "knowage.deployment" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   serviceName: "knowage-main"
   replicas: 1
@@ -247,6 +249,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "knowage.db.deployment" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   serviceName: "knowage-db"
   replicas: 1
@@ -320,6 +323,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "knowage.cache.deployment" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   serviceName: "knowage-cache-db"
   replicas: 1
@@ -394,6 +398,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "knowage.foodmart.deployment" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
@@ -436,6 +441,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "knowage.python.deployment" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
@@ -490,7 +496,8 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "knowage.r.deployment" . }}
+  name: {{ include "knowage.r.deployment" . }}z
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
@@ -546,6 +553,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "knowage.hazelcast.deployment" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
