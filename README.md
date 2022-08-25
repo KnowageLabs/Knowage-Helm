@@ -67,10 +67,12 @@ data:
   hsts: 'false'
   http-snippet: >
     map $sent_http_content_type $expires {
-        default            off;
-        ~image/            300;
-        ~font/          604800;
-        text/javascript    300;
+        default                    off;
+        ~image/                    300;
+        ~font/                  604800;
+        ~text/javascript           300;
+        ~application/javascript    300;
+        ~text/css                  300;
     }
 
     expires $expires;
