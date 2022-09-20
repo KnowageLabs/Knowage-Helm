@@ -61,9 +61,14 @@ spec:
     knowage-suite.com/app: knowage
     {{- include "knowage.selectorLabels" . | nindent 4 }}
   ports:
-    - protocol: TCP
-      port: 8080
-      targetPort: 8080
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: https
 
 
 {{- if and (eq .Values.knowage.deployMetadataDb false) (empty .Values.knowage.db.host) }}
@@ -88,9 +93,10 @@ metadata:
 spec:
 {{- if .Values.knowage.deployMetadataDb }}
   ports:
-    - protocol: TCP
+    - name: main
+      protocol: TCP
       port: 3306
-      targetPort: 3306
+      targetPort: main
   selector:
     knowage-suite.com/app: knowagedb
     {{- include "knowage.selectorLabels" . | nindent 4 }}
@@ -122,9 +128,10 @@ metadata:
 spec:
 {{- if .Values.knowage.deployCacheDb }}
   ports:
-    - protocol: TCP
+    - name: main
+      protocol: TCP
       port: 3306
-      targetPort: 3306
+      targetPort: main
   selector:
     knowage-suite.com/app: knowagecachedb
     {{- include "knowage.selectorLabels" . | nindent 4 }}
@@ -154,9 +161,10 @@ spec:
     knowage-suite.com/app: foodmart
     {{- include "knowage.selectorLabels" . | nindent 4 }}
   ports:
-    - protocol: TCP
+    - name: main
+      protocol: TCP
       port: 3306
-      targetPort: 3306
+      targetPort: main
 {{ end }}
 
 
@@ -179,9 +187,10 @@ spec:
     knowage-suite.com/app: knowage-python
     {{- include "knowage.selectorLabels" . | nindent 4 }}
   ports:
-    - protocol: TCP
+    - name: main
+      protocol: TCP
       port: 5000
-      targetPort: 5000
+      targetPort: http
 
 
 
@@ -203,9 +212,10 @@ spec:
     knowage-suite.com/app: knowage-r
     {{- include "knowage.selectorLabels" . | nindent 4 }}
   ports:
-    - protocol: TCP
+    - name: main
+      protocol: TCP
       port: 5001
-      targetPort: 5001
+      targetPort: http
 
 
 
@@ -227,6 +237,7 @@ spec:
     knowage-suite.com/app: hazelcast
     {{- include "knowage.selectorLabels" . | nindent 4 }}
   ports:
-    - protocol: TCP
+    - name: main
+      protocol: TCP
       port: 5701
-      targetPort: 5701
+      targetPort: main

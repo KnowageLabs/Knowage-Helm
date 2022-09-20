@@ -166,27 +166,29 @@ spec:
             value: {{ include "knowage.hazelcast.service" . }}
         livenessProbe:
           httpGet:
-            path: /knowage/restful-services/version
+            path: /
             port: 8080
           initialDelaySeconds: 120
           failureThreshold: 5
           periodSeconds: 30
         readinessProbe:
           httpGet:
-            path: /knowage/restful-services/version
+            path: /
             port: 8080
           initialDelaySeconds: 120
           failureThreshold: 5
           periodSeconds: 30
         ports:
-          - name: main
+          - name: http
+            containerPort: 8080
+            protocol: TCP
+          - name: https
             containerPort: 8080
             protocol: TCP
         resources:
           requests:
-            cpu: 1
-          limits:
-            cpu: 1
+            cpu: 2
+            memory: 8Gi
         volumeMounts:
         - name: resources
           mountPath: /home/knowage/apache-tomcat/resources
@@ -479,7 +481,7 @@ spec:
           failureThreshold: 5
           periodSeconds: 1
         ports:
-          - name: main
+          - name: http
             containerPort: 5000
             protocol: TCP
 
@@ -535,7 +537,7 @@ spec:
           failureThreshold: 5
           periodSeconds: 1
         ports:
-          - name: main
+          - name: http
             containerPort: 5001
             protocol: TCP
 

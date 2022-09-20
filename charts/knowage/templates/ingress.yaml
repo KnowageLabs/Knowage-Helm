@@ -72,7 +72,7 @@ spec:
           service:
             name: {{ include "knowage.service" . }}
             port:
-              number: 8080
+              name: https
         path: /knowage
         pathType: Prefix
   tls:
