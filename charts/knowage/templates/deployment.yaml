@@ -189,6 +189,9 @@ spec:
           requests:
             cpu: 2
             memory: 8Gi
+          limits:
+            cpu: 4
+            memory: 16Gi
         volumeMounts:
         - name: resources
           mountPath: /home/knowage/apache-tomcat/resources
