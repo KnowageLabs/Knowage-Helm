@@ -36,11 +36,16 @@ metadata:
     nginx.ingress.kubernetes.io/session-cookie-samesite: "Strict"
     nginx.ingress.kubernetes.io/session-cookie-conditional-samesite-none: "true"
     nginx.ingress.kubernetes.io/session-cookie-change-on-failure: "true"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout:	"3600"
+    nginx.ingress.kubernetes.io/proxy-read-timeout:	"3600"
+    # Prevents 413 Request Entity Too Large
+    nginx.ingress.kubernetes.io/proxy-body-size: 128m
     # 
     nginx.ingress.kubernetes.io/configuration-snippet: |
       # Compression
       gzip on;
-      gzip_types text/plain application/xml text/css image/svg+xml;
+      gzip_types application/xml font/woff2 image/svg+xml text/css text/plain;
 
       # Reverse proxy header
       proxy_set_header X-Forwarded-Host $host:$server_port;
@@ -54,6 +59,12 @@ metadata:
       add_header X-Permitted-Cross-Domain-Policies "none" ;
       add_header Content-Security-Policy "default-src 'self'; connect-src 'self' https://login.microsoftonline.com; manifest-src 'self'; object-src 'self'; frame-src 'self' blob: data:; font-src 'self' data:; img-src 'self' blob: data: http://tile.openstreetmap.org  http://*.tile.openstreetmap.org http://www.gravatar.com; script-src 'self' 'unsafe-eval' 'unsafe-inline'; script-src-elem 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://alcdn.msauth.net; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'" ;
       add_header Referrer-Policy "no-referrer" ;
+
+      # Caching (browser side)
+      if ($request_uri ~* \.(js|css|gif|jpe?g|png|svg|woff2?)) {
+        expires 1M;
+        add_header Cache-Control "public";
+      }
   name: {{ include "knowage.ingress" . }}
   namespace: {{ .Release.Namespace }}
 spec:
@@ -61,13 +72,6 @@ spec:
   - host: {{ include "knowage.domain" . }}
     http:
       paths:
-      - backend:
-          service:
-            name: {{ include "knowage.python.service" . }}
-            port:
-              number: 5000
-        path: /knowagewidget
-        pathType: Prefix
       - backend:
           service:
             name: {{ include "knowage.service" . }}

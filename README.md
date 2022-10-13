@@ -48,41 +48,6 @@ $ helm template -f myvals.yaml trial .
 $ helm template -f myvals.yaml -s templates\deployment.yaml trial .
 ```
 
-# Ingress config
-
-Ingress could be tuned to improve Knowage performance using following config snippet:
-
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  annotations:
-    ...
-  labels:
-    ...
-  name: nginx-ingress-ingress-nginx-controller
-  namespace: default
-data:
-  # Prevent duplication of Strict-Transport-Security 
-  hsts: 'false'
-  http-snippet: >
-    map $sent_http_content_type $expires {
-        default                    off;
-        ~image/                    300;
-        ~font/                  604800;
-        ~text/javascript           300;
-        ~application/javascript    300;
-        ~text/css                  300;
-    }
-
-    expires $expires;
-
-  proxy-connect-timeout: '10'
-  proxy-read-timeout: '60'
-  proxy-send-timeout: '60'
-  proxy-body-size: '250m'
-```
-
 ## License
 
 View license information [here](https://github.com/KnowageLabs/Knowage-Server/) for the software contained in this image.

@@ -174,15 +174,18 @@ data:
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
           proxy_pass http://{{ include "knowage.service" . }}:8080;
+	
+          proxy_connect_timeout 60s ;
+          proxy_send_timeout    3600s ;
+          proxy_read_timeout    3600s ;
+
+          # Caching (browser side)
+          if ($request_uri ~* \.(js|css|gif|jpe?g|png|svg|woff2?)) {
+            expires 1M;
+            add_header Cache-Control "public";
+          }
         }
 
-        location /knowagewidget {
-          proxy_set_header X-Forwarded-Host $host:$server_port;
-          proxy_set_header X-Forwarded-Server $host;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-
-          proxy_pass http://{{ include "knowage.python.service" . }}:5000;
-        }
       }
     }
 {{ end }}
