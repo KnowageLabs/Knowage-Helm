@@ -37,6 +37,6 @@ dependencies:
 maintenars:
   - name: Knowage Labs
 icon: https://www.knowage-suite.com/site/wp-content/uploads/2021/04/logo_knowage_100px-1.png
-appVersion: "8.1.1-SNAPSHOT"
+appVersion: "8.1-SNAPSHOT"
 deprecated: false
 annotations:

@@ -162,6 +162,11 @@ spec:
               secretKeyRef:
                 name: {{ include "knowage.secret" . }}
                 key: passwordEncryptionSecret
+          - name: SENSIBLE_DATA_ENCRYPTION_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "knowage.secret" . }}
+                key: sensibleDataEncryptionSecret
           - name: HAZELCAST_HOSTS
             value: {{ include "knowage.hazelcast.service" . }}
         livenessProbe:

@@ -33,8 +33,9 @@ knowage:
   # 
   # Security properties.
   # 
-  hmac:                     # Optional : random value if not provided 
-  passwordEncryptionSecret: # Optional : random value if not provided 
+  hmac:                         # Optional : random value if not provided 
+  passwordEncryptionSecret:     # Optional : random value if not provided 
+  sensibleDataEncryptionSecret: # Optional : random value if not provided 
 
   # 
   # Technical stuff
