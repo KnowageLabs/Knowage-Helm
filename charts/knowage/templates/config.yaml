@@ -192,6 +192,7 @@ data:
     }
 {{ end }}
 
+{{ if eq ( default .Values.knowage.deployHazelcast false ) true }}
 #  _    _           ____________ _      _____           _____ _______ 
 # | |  | |   /\    |___  /  ____| |    / ____|   /\    / ____|__   __|
 # | |__| |  /  \      / /| |__  | |   | |       /  \  | (___    | |   
@@ -226,3 +227,4 @@ data:
           <property name="hazelcast.socket.bind.any">false</property>
         </properties>
     </hazelcast>
+{{ end }}

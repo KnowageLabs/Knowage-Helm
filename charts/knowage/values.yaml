@@ -52,6 +52,8 @@ knowage:
 
   deployR: true
 
+  deployHazelcast: false
+
   # 
   # Let the user uses a custom image.
   # 

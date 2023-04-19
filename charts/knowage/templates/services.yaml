@@ -217,6 +217,7 @@ spec:
       targetPort: http
 {{ end }}
 
+{{ if eq ( default .Values.knowage.deployHazelcast false ) true }}
 #  _    _           ____________ _      _____           _____ _______ 
 # | |  | |   /\    |___  /  ____| |    / ____|   /\    / ____|__   __|
 # | |__| |  /  \      / /| |__  | |   | |       /  \  | (___    | |   
@@ -239,3 +240,4 @@ spec:
       protocol: TCP
       port: 5701
       targetPort: main
+{{ end }}

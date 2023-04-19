@@ -167,8 +167,10 @@ spec:
               secretKeyRef:
                 name: {{ include "knowage.secret" . }}
                 key: sensibleDataEncryptionSecret
+{{- if eq ( default .Values.knowage.deployHazelcast false ) true }}
           - name: HAZELCAST_HOSTS
             value: {{ include "knowage.hazelcast.service" . }}
+{{- end }}
         livenessProbe:
           httpGet:
             path: /
@@ -551,6 +553,7 @@ spec:
             protocol: TCP
 {{ end }}
 
+{{ if eq ( default .Values.knowage.deployHazelcast false ) true }}
 #  _    _           ____________ _      _____           _____ _______ 
 # | |  | |   /\    |___  /  ____| |    / ____|   /\    / ____|__   __|
 # | |__| |  /  \      / /| |__  | |   | |       /  \  | (___    | |   
@@ -598,3 +601,4 @@ spec:
           items:
             - key: hazelcast.xml
               path: hazelcast.xml
+{{ end }}
