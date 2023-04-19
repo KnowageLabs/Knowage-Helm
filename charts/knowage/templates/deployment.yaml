@@ -439,6 +439,7 @@ spec:
             protocol: TCP
 {{ end }}
 
+{{ if eq ( default .Values.knowage.deployPython false ) true }}
 #  _______     _________ _    _  ____  _   _ 
 # |  __ \ \   / /__   __| |  | |/ __ \| \ | |
 # | |__) \ \_/ /   | |  | |__| | |  | |  \| |
@@ -492,9 +493,9 @@ spec:
           - name: http
             containerPort: 5000
             protocol: TCP
+{{ end }}
 
-
-
+{{ if eq ( default .Values.knowage.deployR false ) true }}
 ---
 #  _____  
 # |  __ \ 
@@ -548,8 +549,7 @@ spec:
           - name: http
             containerPort: 5001
             protocol: TCP
-
-
+{{ end }}
 
 #  _    _           ____________ _      _____           _____ _______ 
 # | |  | |   /\    |___  /  ____| |    / ____|   /\    / ____|__   __|

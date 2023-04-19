@@ -48,6 +48,10 @@ knowage:
   
   deployCustomReverseProxy: false
 
+  deployPython: true
+
+  deployR: true
+
   # 
   # Let the user uses a custom image.
   # 

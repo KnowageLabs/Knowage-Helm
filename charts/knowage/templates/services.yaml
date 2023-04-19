@@ -167,8 +167,7 @@ spec:
       targetPort: main
 {{ end }}
 
-
-
+{{ if eq ( default .Values.knowage.deployPython false ) true }}
 #  _______     _________ _    _  ____  _   _ 
 # |  __ \ \   / /__   __| |  | |/ __ \| \ | |
 # | |__) \ \_/ /   | |  | |__| | |  | |  \| |
@@ -191,9 +190,9 @@ spec:
       protocol: TCP
       port: 5000
       targetPort: http
+{{ end }}
 
-
-
+{{ if eq ( default .Values.knowage.deployR false ) true }}
 #  _____  
 # |  __ \ 
 # | |__) |
@@ -216,8 +215,7 @@ spec:
       protocol: TCP
       port: 5001
       targetPort: http
-
-
+{{ end }}
 
 #  _    _           ____________ _      _____           _____ _______ 
 # | |  | |   /\    |___  /  ____| |    / ____|   /\    / ____|__   __|
