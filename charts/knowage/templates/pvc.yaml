@@ -31,13 +31,15 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   accessModes:
-  - ReadWriteMany
+  - ReadWriteOnce
   resources:
     requests:
       storage: 10Gi
-  storageClassName: ""
+{{- if .Values.knowage.storageClasses.main }}
+  storageClassName: {{ .Values.knowage.storageClasses.main }}
+{{- else }}
   volumeName: {{ include "knowage.volume" . }}
-
+{{- end }}
 
 
 {{ if .Values.knowage.deployMetadataDb }}
@@ -60,8 +62,12 @@ spec:
   resources:
     requests:
       storage: 10Gi
+{{- if .Values.knowage.storageClasses.db }}
+  storageClassName: {{ .Values.knowage.storageClasses.db }}
+{{- else }}
   volumeName: {{ include "knowage.db.volume" . }}
-{{ end }}
+{{- end }}
+{{- end }}
 
 
 {{ if .Values.knowage.deployCacheDb }}
@@ -84,5 +90,9 @@ spec:
   resources:
     requests:
       storage: 10Gi
+{{- if .Values.knowage.storageClasses.cache }}
+  storageClassName: {{ .Values.knowage.storageClasses.cache }}
+{{- else }}
   volumeName: {{ include "knowage.cache.volume" . }}
+{{- end }}
 {{ end }}

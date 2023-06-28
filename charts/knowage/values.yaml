@@ -65,6 +65,14 @@ knowage:
   # Pull secret for private registry when using custom images
   #
   imagePullSecret:
+  
+  # 
+  # Storage Classes for server, metadata db and cache db
+  #
+  storageClasses: 
+    main: 
+    db: 
+    cache: 
 
   # 
   # Content of the services-whitelist.xml inside "/home/knowage/apache-tomcat/resources", for example:
