@@ -190,7 +190,7 @@ spec:
             containerPort: 8080
             protocol: TCP
           - name: https
-            containerPort: 8080
+            containerPort: 8443
             protocol: TCP
         resources:
           requests:
