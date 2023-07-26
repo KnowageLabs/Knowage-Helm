@@ -18,7 +18,7 @@
 
 apiVersion: v2
 name: knowage
-version: 1.0.5
+version: 1.0.6
 kubeVersion: ">= 1.22.0-0"
 description: A Helm chart for Kubernetes Suite
 type: application
@@ -33,10 +33,10 @@ sources:
   - https://github.com/KnowageLabs/Knowage-Server
   - https://github.com/KnowageLabs/Knowage-Server-Docker
   - https://github.com/KnowageLabs/Knowage-Helm
-dependencies:
-maintenars:
+dependencies: []
+maintainers:
   - name: Knowage Labs
 icon: https://www.knowage-suite.com/site/wp-content/uploads/2021/04/logo_knowage_100px-1.png
 appVersion: "8.1-SNAPSHOT"
 deprecated: false
-annotations:
+annotations: {}

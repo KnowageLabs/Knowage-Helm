@@ -16,64 +16,27 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-{{ if eq ( default .Values.knowage.deployIngress false ) true }}
+{{ if or (eq ( default .Values.knowage.deployIngress false ) true) (eq ( default .Values.knowage.ingress.deploy false ) true) }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/app-root: "/knowage"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/proxy-buffering: "on"
-    # User must use the same node everytime
-    nginx.ingress.kubernetes.io/affinity: "cookie"
-    nginx.ingress.kubernetes.io/affinity-mode: "persistent"
-    nginx.ingress.kubernetes.io/session-cookie-name: "route"
-    nginx.ingress.kubernetes.io/session-cookie-path: "/"
-    nginx.ingress.kubernetes.io/session-cookie-samesite: "Strict"
-    nginx.ingress.kubernetes.io/session-cookie-conditional-samesite-none: "true"
-    nginx.ingress.kubernetes.io/session-cookie-change-on-failure: "true"
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
-    nginx.ingress.kubernetes.io/proxy-send-timeout:	"3600"
-    nginx.ingress.kubernetes.io/proxy-read-timeout:	"3600"
-    # Prevents 413 Request Entity Too Large
-    nginx.ingress.kubernetes.io/proxy-body-size: 128m
-    # 
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      # Compression
-      gzip on;
-      gzip_types application/xml font/woff2 image/svg+xml text/css text/plain;
-
-      # Reverse proxy header
-      proxy_set_header X-Forwarded-Host $host:$server_port;
-      proxy_set_header X-Forwarded-Server $host;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-
-      # Security header
-      # WARNING: actually, a bug send also another Strict-Transport-Security but the following is the correct one
-      add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" ;
-      add_header X-Content-Type-Options nosniff ;
-      add_header X-Permitted-Cross-Domain-Policies "none" ;
-
-      # Created by: https://report-uri.com/home/generate
-      add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src-elem 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://alcdn.msauth.net; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: http://tile.openstreetmap.org http://*.tile.openstreetmap.org http://www.gravatar.com; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://login.microsoftonline.com https://gist.githubusercontent.com; object-src 'self'; frame-src 'self' blob: data:; manifest-src 'self'" ;
-      add_header Referrer-Policy "no-referrer" ;
-
-      # Caching (browser side)
-      if ($request_uri ~* \.(js|css|gif|jpe?g|png|svg|woff2?)) {
-        expires 1M;
-        add_header Cache-Control "public";
-      }
+{{ toYaml .Values.knowage.ingress.annotations | indent 4 }}
   name: {{ include "knowage.ingress" . }}
   namespace: {{ .Release.Namespace }}
 spec:
+  {{- if .Values.knowage.ingress.class }}
+  ingressClassName: {{ printf .Values.knowage.ingress.class }}
+  {{- end }}
   rules:
   - host: {{ include "knowage.domain" . }}
     http:
       paths:
+      # WARNING : Here we list every context because AWS Load Balancer Controller seems to have
+      #  a very strange behavior with pathType equals to Prefix where /knowagecockpitengine, for
+      #  example, is not managed by /knowage rule. The Nginx Ingress Controller has the behavior
+      #  we expected.
       - backend:
           service:
             name: {{ include "knowage.service" . }}
@@ -81,8 +44,92 @@ spec:
               number: 443
         path: /knowage
         pathType: Prefix
+      - backend:
+          service:
+            name: {{ include "knowage.service" . }}
+            port:
+              number: 443
+        path: /knowage-api
+        pathType: Prefix
+      - backend:
+          service:
+            name: {{ include "knowage.service" . }}
+            port:
+              number: 443
+        path: /knowage-data-preparation
+        pathType: Prefix
+      - backend:
+          service:
+            name: {{ include "knowage.service" . }}
+            port:
+              number: 443
+        path: /knowage-vue
+        pathType: Prefix
+      - backend:
+          service:
+            name: {{ include "knowage.service" . }}
+            port:
+              number: 443
+        path: /knowagebirtreportengine
+        pathType: Prefix
+      - backend:
+          service:
+            name: {{ include "knowage.service" . }}
+            port:
+              number: 443
+        path: /knowagecockpitengine
+        pathType: Prefix
+      - backend:
+          service:
+            name: {{ include "knowage.service" . }}
+            port:
+              number: 443
+        path: /knowagegeoreportengine
+        pathType: Prefix
+      - backend:
+          service:
+            name: {{ include "knowage.service" . }}
+            port:
+              number: 443
+        path: /knowagejasperreportengine
+        pathType: Prefix
+      - backend:
+          service:
+            name: {{ include "knowage.service" . }}
+            port:
+              number: 443
+        path: /knowagekpiengine
+        pathType: Prefix
+      - backend:
+          service:
+            name: {{ include "knowage.service" . }}
+            port:
+              number: 443
+        path: /knowagemeta
+        pathType: Prefix
+      - backend:
+          service:
+            name: {{ include "knowage.service" . }}
+            port:
+              number: 443
+        path: /knowageqbeengine
+        pathType: Prefix
+      - backend:
+          service:
+            name: {{ include "knowage.service" . }}
+            port:
+              number: 443
+        path: /knowagesvgviewerengine
+        pathType: Prefix
+      - backend:
+          service:
+            name: {{ include "knowage.service" . }}
+            port:
+              number: 443
+        path: /knowagewhatifengine
+        pathType: Prefix
   tls:
     - hosts:
       - {{ include "knowage.domain" . }}
-      secretName: {{ include "knowage.tls" . }}
+      # secretName: {{ include "knowage.tls" . }}
 {{ end }}
