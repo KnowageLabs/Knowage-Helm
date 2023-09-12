@@ -39,93 +39,93 @@ spec:
       #  we expected.
       - backend:
           service:
-            name: {{ include "knowage.service" . }}
+            name: {{ include "knowage.ingress.service" . }}
             port:
-              number: 443
+              number: {{ include "knowage.ingress.port" . }}
         path: /knowage
         pathType: Prefix
       - backend:
           service:
-            name: {{ include "knowage.service" . }}
+            name: {{ include "knowage.ingress.service" . }}
             port:
-              number: 443
+              number: {{ include "knowage.ingress.port" . }}
         path: /knowage-api
         pathType: Prefix
       - backend:
           service:
-            name: {{ include "knowage.service" . }}
+            name: {{ include "knowage.ingress.service" . }}
             port:
-              number: 443
+              number: {{ include "knowage.ingress.port" . }}
         path: /knowage-data-preparation
         pathType: Prefix
       - backend:
           service:
-            name: {{ include "knowage.service" . }}
+            name: {{ include "knowage.ingress.service" . }}
             port:
-              number: 443
+              number: {{ include "knowage.ingress.port" . }}
         path: /knowage-vue
         pathType: Prefix
       - backend:
           service:
-            name: {{ include "knowage.service" . }}
+            name: {{ include "knowage.ingress.service" . }}
             port:
-              number: 443
+              number: {{ include "knowage.ingress.port" . }}
         path: /knowagebirtreportengine
         pathType: Prefix
       - backend:
           service:
-            name: {{ include "knowage.service" . }}
+            name: {{ include "knowage.ingress.service" . }}
             port:
-              number: 443
+              number: {{ include "knowage.ingress.port" . }}
         path: /knowagecockpitengine
         pathType: Prefix
       - backend:
           service:
-            name: {{ include "knowage.service" . }}
+            name: {{ include "knowage.ingress.service" . }}
             port:
-              number: 443
+              number: {{ include "knowage.ingress.port" . }}
         path: /knowagegeoreportengine
         pathType: Prefix
       - backend:
           service:
-            name: {{ include "knowage.service" . }}
+            name: {{ include "knowage.ingress.service" . }}
             port:
-              number: 443
+              number: {{ include "knowage.ingress.port" . }}
         path: /knowagejasperreportengine
         pathType: Prefix
       - backend:
           service:
-            name: {{ include "knowage.service" . }}
+            name: {{ include "knowage.ingress.service" . }}
             port:
-              number: 443
+              number: {{ include "knowage.ingress.port" . }}
         path: /knowagekpiengine
         pathType: Prefix
       - backend:
           service:
-            name: {{ include "knowage.service" . }}
+            name: {{ include "knowage.ingress.service" . }}
             port:
-              number: 443
+              number: {{ include "knowage.ingress.port" . }}
         path: /knowagemeta
         pathType: Prefix
       - backend:
           service:
-            name: {{ include "knowage.service" . }}
+            name: {{ include "knowage.ingress.service" . }}
             port:
-              number: 443
+              number: {{ include "knowage.ingress.port" . }}
         path: /knowageqbeengine
         pathType: Prefix
       - backend:
           service:
-            name: {{ include "knowage.service" . }}
+            name: {{ include "knowage.ingress.service" . }}
             port:
-              number: 443
+              number: {{ include "knowage.ingress.port" . }}
         path: /knowagesvgviewerengine
         pathType: Prefix
       - backend:
           service:
-            name: {{ include "knowage.service" . }}
+            name: {{ include "knowage.ingress.service" . }}
             port:
-              number: 443
+              number: {{ include "knowage.ingress.port" . }}
         path: /knowagewhatifengine
         pathType: Prefix
   tls:

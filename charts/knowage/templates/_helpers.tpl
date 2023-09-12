@@ -378,6 +378,47 @@ Create the name of the config of Hazelcast
 {{ printf "%s-%s" (include "knowage.fullname" .) "hazelcast" }}
 {{- end }}
 
+{{/*
+Create the name of the config of Hazelcast
+*/}}
+{{- define "knowage.python.config" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "python" }}
+{{- end }}
+
+{{/*
+Create the name of the service for the ingress
+*/}}
+{{- define "knowage.ingress.service" -}}
+{{- if eq ( default .Values.knowage.deployCustomReverseProxy false ) true -}}
+{{- include "knowage.proxy.service" . -}}
+{{ else }}
+{{- include "knowage.service" . -}}
+{{- end -}}
+{{- end }}
+
+{{/*
+Create the name of the service for the ingress
+*/}}
+{{- define "knowage.ingress.port" -}}
+{{- if eq ( default .Values.knowage.deployCustomReverseProxy false ) true -}}
+80
+{{- else -}}
+443
+{{- end -}}
+{{- end }}
+
+{{/*
+Create the name of the service for the ingress
+*/}}
+{{- define "knowage.imagePullPolicy" -}}
+{{- if .Values.knowage.imagePullPolicy -}}
+{{ print .Values.knowage.imagePullPolicy }}
+{{- else -}}
+IfNotPresent
+{{- end -}}
+{{- end }}
+
+
 {{ default true    .Values.knowage.installSampleData }}
 {{ default true    .Values.knowage.deployMetadataDb }}
 {{ default true    .Values.knowage.deployCacheDb }}

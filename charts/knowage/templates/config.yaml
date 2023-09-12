@@ -146,7 +146,7 @@ data:
 
       server {
         listen       80;
-        server_name  {{ include "knowage.proxy.service" . }};
+        server_name  {{ include "knowage.domain" . }};
 
         # Compression
         gzip on;
@@ -168,24 +168,39 @@ data:
           add_header X-Permitted-Cross-Domain-Policies "none" ;
 
           # Created by: https://report-uri.com/home/generate
-          add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src-elem 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://alcdn.msauth.net; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: http://tile.openstreetmap.org http://*.tile.openstreetmap.org http://www.gravatar.com; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://login.microsoftonline.com; object-src 'self'; frame-src 'self' blob: data:; manifest-src 'self'" ;
+          set $CSP "" ;
+          set $CSP "${CSP}default-src 'self'; " ;
+          set $CSP "${CSP}script-src 'self' 'unsafe-inline' 'unsafe-eval' ; " ;
+          set $CSP "${CSP}script-src-elem 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://alcdn.msauth.net https://cdn.jsdelivr.net ; " ;
+          set $CSP "${CSP}style-src 'self' 'unsafe-inline' ; " ;
+          set $CSP "${CSP}style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com ; " ;
+          set $CSP "${CSP}img-src 'self' data: blob: http://tile.openstreetmap.org http://*.tile.openstreetmap.org http://www.gravatar.com ; " ;
+          set $CSP "${CSP}font-src 'self' data: https://fonts.gstatic.com ; " ;
+          set $CSP "${CSP}connect-src 'self' https://login.microsoftonline.com https://gist.githubusercontent.com ; " ;
+          set $CSP "${CSP}object-src 'self' ; " ;
+          set $CSP "${CSP}frame-src 'self' blob: data: ; " ;
+          set $CSP "${CSP}manifest-src 'self' ; " ;
+          set $CSP "${CSP}worker-src 'self' blob: ; " ;
+          add_header Content-Security-Policy "${CSP}" ;
           add_header Referrer-Policy "no-referrer" ;
+
+          # Caching (browser side)
+          if ($request_uri ~* \.(css|gif|html|js|jpe?g|png|svg|woff2?)$) {
+            expires 60m;
+            add_header Cache-Control "public";
+          }
 
           proxy_set_header X-Forwarded-Host $host:$server_port;
           proxy_set_header X-Forwarded-Server $host;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
-          proxy_pass http://{{ include "knowage.service" . }}:8080;
-	
+          proxy_pass http://{{ include "knowage.service" . }}:80;
+          proxy_redirect ~^http://knowage-main(/.+)$ $1;
+
           proxy_connect_timeout 60s ;
           proxy_send_timeout    3600s ;
           proxy_read_timeout    3600s ;
 
-          # Caching (browser side)
-          if ($request_uri ~* \.(js|css|gif|jpe?g|png|svg|woff2?)) {
-            expires 1M;
-            add_header Cache-Control "public";
-          }
         }
 
       }
@@ -227,4 +242,25 @@ data:
           <property name="hazelcast.socket.bind.any">false</property>
         </properties>
     </hazelcast>
+{{ end }}
+
+{{ if or (eq ( default .Values.knowage.deployPython false ) true) (eq ( default .Values.knowage.python.deploy false ) true) }}
+#  _______     _________ _    _  ____  _   _ 
+# |  __ \ \   / /__   __| |  | |/ __ \| \ | |
+# | |__) \ \_/ /   | |  | |__| | |  | |  \| |
+# |  ___/ \   /    | |  |  __  | |  | | . ` |
+# | |      | |     | |  | |  | | |__| | |\  |
+# |_|      |_|     |_|  |_|  |_|\____/|_| \_|
+#                                            
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "knowage.python.config" . }}
+  namespace: {{ .Release.Namespace }}
+data:
+  requirements.txt: |
+{{- range $idx, $val := .Values.knowage.python.libraries }}
+{{ print $val | indent 4 }}
+{{- end }}
 {{ end }}

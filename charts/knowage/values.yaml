@@ -46,10 +46,6 @@ knowage:
   
   deployCustomReverseProxy: false
 
-  deployPython: true
-
-  deployR: true
-
   deployHazelcast: false
 
   # 
@@ -155,3 +151,16 @@ knowage:
           expires 1M;
           add_header Cache-Control "public";
         }
+  
+  deployPython: true # DEPRECATED
+  python:
+    deploy: true
+    libraries:
+      - scikit-learn==1.2.2
+      - pandas==2.0.1
+  
+  deployR: true # DEPRECATED
+  r:
+    deploy: true
+
+  imagePullPolicy: IfNotPresent

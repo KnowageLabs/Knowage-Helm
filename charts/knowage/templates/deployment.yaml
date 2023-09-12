@@ -31,7 +31,7 @@ metadata:
   name: {{ include "knowage.proxy.deployment" . }}
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       knowage-suite.com/app: proxy
@@ -98,7 +98,7 @@ spec:
       containers:
       - name: {{ include "knowage.pod" . }}
         image: {{ printf "%s:%s" ( default "knowagelabs/knowage-server-docker" .Values.knowage.customImageName ) .Chart.AppVersion | quote }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: {{ include "knowage.imagePullPolicy" . }}
         env:
           - name: DB_USER
             valueFrom:
@@ -426,7 +426,7 @@ spec:
       containers:
       - name: {{ include "knowage.foodmart.pod" . }}
         image: "m20tech/mysql-foodmart"
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: {{ include "knowage.imagePullPolicy" . }}
         livenessProbe:
           tcpSocket:
             port: 3306
@@ -441,7 +441,7 @@ spec:
             protocol: TCP
 {{ end }}
 
-{{ if eq ( default .Values.knowage.deployPython false ) true }}
+{{ if or (eq ( default .Values.knowage.deployPython false ) true) (eq ( default .Values.knowage.python.deploy false ) true) }}
 #  _______     _________ _    _  ____  _   _ 
 # |  __ \ \   / /__   __| |  | |/ __ \| \ | |
 # | |__) \ \_/ /   | |  | |__| | |  | |  \| |
@@ -470,7 +470,7 @@ spec:
       containers:
       - name: {{ include "knowage.python.pod" . }}
         image: "knowagelabs/knowage-python-docker:{{ .Chart.AppVersion }}"
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: {{ include "knowage.imagePullPolicy" . }}
         env:
           - name: HMAC_KEY
             valueFrom:
@@ -495,9 +495,20 @@ spec:
           - name: http
             containerPort: 5000
             protocol: TCP
+        volumeMounts:
+          - name: requirements
+            mountPath: /app/requirements.txt
+            subPath: requirements.txt
+      volumes:
+        - name: requirements
+          configMap:
+            name: {{ include "knowage.python.config" . }}
+            items:
+              - key: requirements.txt
+                path: requirements.txt
 {{ end }}
 
-{{ if eq ( default .Values.knowage.deployR false ) true }}
+{{ if or (eq ( default .Values.knowage.deployR false ) true) (eq ( default .Values.knowage.r.deploy false ) true) }}
 ---
 #  _____  
 # |  __ \ 
@@ -526,7 +537,7 @@ spec:
       containers:
       - name: {{ include "knowage.r.pod" . }}
         image: "knowagelabs/knowage-r-docker:{{ .Chart.AppVersion }}"
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: {{ include "knowage.imagePullPolicy" . }}
         env:
           - name: HMAC_KEY
             valueFrom:
