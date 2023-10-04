@@ -139,6 +139,8 @@ data:
       worker_connections  10240;
     }
     http {
+      client_max_body_size 128M ;
+
       access_log	/var/log/nginx/access.log ;
 
       proxy_cache_path   /var/cache/nginx levels=1:2 keys_zone=static-cache:10m max_size=9000g inactive=1d ;
