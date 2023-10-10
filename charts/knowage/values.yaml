@@ -102,7 +102,6 @@ knowage:
   #   </tomcat-users>
   tomcatUsers:
 
-  deployIngress: false # DEPRECATED
   ingress:
     deploy: true
     class: nginx
@@ -121,8 +120,8 @@ knowage:
       nginx.ingress.kubernetes.io/session-cookie-conditional-samesite-none: "true"
       nginx.ingress.kubernetes.io/session-cookie-change-on-failure: "true"
       nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
-      nginx.ingress.kubernetes.io/proxy-send-timeout:	"3600"
-      nginx.ingress.kubernetes.io/proxy-read-timeout:	"3600"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
       # Prevents 413 Request Entity Too Large
       nginx.ingress.kubernetes.io/proxy-body-size: 128m
       # 
@@ -152,15 +151,27 @@ knowage:
           add_header Cache-Control "public";
         }
   
-  deployPython: true # DEPRECATED
   python:
     deploy: true
     libraries:
       - scikit-learn==1.2.2
       - pandas==2.0.1
   
-  deployR: true # DEPRECATED
   r:
     deploy: true
 
   imagePullPolicy: IfNotPresent
+
+  oauth2:
+    enabled: false
+    type:           OIDC_IMPLICIT # PKCE, AUTHORIZATION_CODE, OIDC_IMPLICIT, NONE
+    authorizeUrl:   https://iam/authorize
+    clientId:       00000000-0000-0000-0000-000000000000
+    clientSecret:   11111111-1111-1111-1111-111111111111
+    accessTokenUrl: https://iam/acceessToken
+    redirectUrl:    https://mydomain.com/knowage
+    jwksUrl:        https://iam/jwks
+    scopes:         openid knowage
+    jwtTokenIssuer: https://iam/
+    userNameClaim:  "family_name given_name"
+    roleJsonPath:   "$.applications[?(@.name == 'Knowage')].profiles[*].name"

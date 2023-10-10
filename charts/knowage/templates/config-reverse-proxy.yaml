@@ -1,0 +1,113 @@
+#
+# Knowage, Open Source Business Intelligence suite
+# Copyright (C) 2023 Engineering Ingegneria Informatica S.p.A.
+# 
+# Knowage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Knowage is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+# 
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+{{ if eq ( default .Values.knowage.deployCustomReverseProxy false ) true }}
+---
+#  _____  ________      ________ _____   _____ ______   _____  _____   ______   ____     __
+# |  __ \|  ____\ \    / /  ____|  __ \ / ____|  ____| |  __ \|  __ \ / __ \ \ / /\ \   / /
+# | |__) | |__   \ \  / /| |__  | |__) | (___ | |__    | |__) | |__) | |  | \ V /  \ \_/ / 
+# |  _  /|  __|   \ \/ / |  __| |  _  / \___ \|  __|   |  ___/|  _  /| |  | |> <    \   /  
+# | | \ \| |____   \  /  | |____| | \ \ ____) | |____  | |    | | \ \| |__| / . \    | |   
+# |_|  \_\______|   \/   |______|_|  \_\_____/|______| |_|    |_|  \_\\____/_/ \_\   |_|   
+#                                                                                          
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "knowage.proxy.config" . }}
+  namespace: {{ .Release.Namespace }}
+data:
+  nginx.conf: |
+    user nginx ;
+    worker_processes  5 ;
+    error_log  /var/log/nginx/error.log ;
+    events {
+      worker_connections  10240;
+    }
+    http {
+      client_max_body_size 128M ;
+
+      access_log	/var/log/nginx/access.log ;
+
+      proxy_cache_path   /var/cache/nginx levels=1:2 keys_zone=static-cache:10m max_size=9000g inactive=1d ;
+      proxy_temp_path    /var/cache/nginx/tmp ;
+
+      server {
+        listen              80;
+        listen              443 ssl;
+        server_name         {{ include "knowage.domain" . }};
+        ssl_certificate     /etc/nginx/cert/tls.crt;
+        ssl_certificate_key /etc/nginx/cert/tls.key;
+
+        # Compression
+        gzip       on;
+        gzip_types text/plain application/xml text/css image/svg+xml;
+        
+        location / {
+          return 301 https://$host/knowage;
+        }
+
+        location /knowage {
+          proxy_cache                 static-cache ;
+          proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504 ;
+
+          proxy_hide_header Strict-Transport-Security;
+
+          add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0' ;
+          add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" ;
+          add_header X-Content-Type-Options nosniff ;
+          add_header X-Permitted-Cross-Domain-Policies "none" ;
+
+          set $CSP "" ;
+          set $CSP "${CSP}default-src 'self'; " ;
+          set $CSP "${CSP}script-src 'self' 'unsafe-inline' 'unsafe-eval' ; " ;
+          set $CSP "${CSP}script-src-elem 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://alcdn.msauth.net https://cdn.jsdelivr.net ; " ;
+          set $CSP "${CSP}style-src 'self' 'unsafe-inline' ; " ;
+          set $CSP "${CSP}style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com ; " ;
+          set $CSP "${CSP}img-src 'self' data: blob: http://tile.openstreetmap.org http://*.tile.openstreetmap.org http://www.gravatar.com ; " ;
+          set $CSP "${CSP}font-src 'self' data: https://fonts.gstatic.com ; " ;
+          set $CSP "${CSP}connect-src 'self' https://login.microsoftonline.com https://gist.githubusercontent.com ; " ;
+          set $CSP "${CSP}object-src 'self' ; " ;
+          set $CSP "${CSP}frame-src 'self' blob: data: ; " ;
+          set $CSP "${CSP}manifest-src 'self' ; " ;
+          set $CSP "${CSP}worker-src 'self' blob: ; " ;
+          add_header Content-Security-Policy "${CSP}" ;
+          add_header Referrer-Policy "no-referrer" ;
+
+          # Caching (browser side)
+          if ($request_uri ~* \.(css|gif|html|js|jpe?g|png|svg|woff2?)$) {
+            expires 60m;
+            add_header Cache-Control "public";
+          }
+
+          proxy_set_header X-Forwarded-Host $host:$server_port;
+          proxy_set_header X-Forwarded-Server $host;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+          proxy_pass https://{{ include "knowage.service" . }}:443;
+          proxy_redirect ~^https://knowage-main(/.+)$ $1;
+          # absolute_redirect off;
+
+          proxy_connect_timeout 180s ;
+          proxy_send_timeout    3600s ;
+          proxy_read_timeout    3600s ;
+
+        }
+
+      }
+    }
+{{ end }}

@@ -28,7 +28,7 @@ metadata:
 spec:
   {{- if .Values.knowage.ingress.class }}
   ingressClassName: {{ printf .Values.knowage.ingress.class }}
-  {{- end }}
+  {{ end -}}
   rules:
   - host: {{ include "knowage.domain" . }}
     http:

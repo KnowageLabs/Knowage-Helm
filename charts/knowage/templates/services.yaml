@@ -17,6 +17,7 @@
 #
 
 {{ if eq ( default .Values.knowage.deployCustomReverseProxy false ) true }}
+---
 #  _____  ________      ________ _____   _____ ______   _____  _____   ______   ____     __
 # |  __ \|  ____\ \    / /  ____|  __ \ / ____|  ____| |  __ \|  __ \ / __ \ \ / /\ \   / /
 # | |__) | |__   \ \  / /| |__  | |__) | (___ | |__    | |__) | |__) | |  | \ V /  \ \_/ / 
@@ -24,7 +25,6 @@
 # | | \ \| |____   \  /  | |____| | \ \ ____) | |____  | |    | | \ \| |__| / . \    | |   
 # |_|  \_\______|   \/   |______|_|  \_\_____/|______| |_|    |_|  \_\\____/_/ \_\   |_|   
 #                                                                                          
----
 apiVersion: v1
 kind: Service
 metadata:
@@ -36,13 +36,19 @@ spec:
     knowage-suite.com/app: proxy
     {{- include "knowage.selectorLabels" . | nindent 4 }}
   ports:
-    - protocol: TCP
+    - name: http
+      protocol: TCP
       port: 80
-      targetPort: 80
+      targetPort: http
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: https
 {{ end }}
 
 
 
+---
 #  __  __          _____ _   _            _____  _____  
 # |  \/  |   /\   |_   _| \ | |     /\   |  __ \|  __ \ 
 # | \  / |  /  \    | | |  \| |    /  \  | |__) | |__) |
@@ -50,7 +56,6 @@ spec:
 # | |  | |/ ____ \ _| |_| |\  |  / ____ \| |    | |     
 # |_|  |_/_/    \_\_____|_| \_| /_/    \_\_|    |_|     
 #                                                       
----
 apiVersion: v1
 kind: Service
 metadata:
@@ -77,6 +82,7 @@ spec:
 {{- if and (eq .Values.knowage.deployMetadataDb false) (empty .Values.knowage.db.port) }}
 {{- fail "A port for metadata DB (knowage.db.port) is expected" }}
 {{- end }}
+---
 #  __  __           _____ _______ ______ _____    _____  ____  
 # |  \/  |   /\    / ____|__   __|  ____|  __ \  |  __ \|  _ \ 
 # | \  / |  /  \  | (___    | |  | |__  | |__) | | |  | | |_) |
@@ -84,7 +90,6 @@ spec:
 # | |  | |/ ____ \ ____) |  | |  | |____| | \ \  | |__| | |_) |
 # |_|  |_/_/    \_\_____/   |_|  |______|_|  \_\ |_____/|____/ 
 #                                                              
----
 apiVersion: v1
 kind: Service
 metadata:
@@ -112,6 +117,7 @@ spec:
 {{- if and (eq .Values.knowage.deployCacheDb false) (empty .Values.knowage.cache.port) }}
 {{- fail "A port for cache DB (knowage.cache.port) is expected" }}
 {{- end }}
+---
 #   _____          _____ _    _ ______   _____  ____  
 #  / ____|   /\   / ____| |  | |  ____| |  __ \|  _ \ 
 # | |       /  \ | |    | |__| | |__    | |  | | |_) |
@@ -119,7 +125,6 @@ spec:
 # | |____ / ____ \ |____| |  | | |____  | |__| | |_) |
 #  \_____/_/    \_\_____|_|  |_|______| |_____/|____/ 
 #                                                     
----
 apiVersion: v1
 kind: Service
 metadata:
@@ -143,6 +148,7 @@ spec:
 
 
 {{- if eq ( default .Values.knowage.installSampleData false ) true }}
+---
 #  ______ ____   ____  _____  __  __          _____ _______ 
 # |  ____/ __ \ / __ \|  __ \|  \/  |   /\   |  __ \__   __|
 # | |__ | |  | | |  | | |  | | \  / |  /  \  | |__) | | |   
@@ -150,7 +156,6 @@ spec:
 # | |   | |__| | |__| | |__| | |  | |/ ____ \| | \ \  | |   
 # |_|    \____/ \____/|_____/|_|  |_/_/    \_\_|  \_\ |_|   
 #                                                           
----
 apiVersion: v1
 kind: Service
 metadata:
@@ -168,6 +173,7 @@ spec:
 {{ end }}
 
 {{ if eq ( default .Values.knowage.deployPython false ) true }}
+---
 #  _______     _________ _    _  ____  _   _ 
 # |  __ \ \   / /__   __| |  | |/ __ \| \ | |
 # | |__) \ \_/ /   | |  | |__| | |  | |  \| |
@@ -175,7 +181,6 @@ spec:
 # | |      | |     | |  | |  | | |__| | |\  |
 # |_|      |_|     |_|  |_|  |_|\____/|_| \_|
 #                                            
----
 apiVersion: v1
 kind: Service
 metadata:
@@ -193,6 +198,7 @@ spec:
 {{ end }}
 
 {{ if eq ( default .Values.knowage.deployR false ) true }}
+---
 #  _____  
 # |  __ \ 
 # | |__) |
@@ -200,7 +206,6 @@ spec:
 # | | \ \ 
 # |_|  \_\
 #         
----
 apiVersion: v1
 kind: Service
 metadata:
@@ -218,6 +223,7 @@ spec:
 {{ end }}
 
 {{ if eq ( default .Values.knowage.deployHazelcast false ) true }}
+---
 #  _    _           ____________ _      _____           _____ _______ 
 # | |  | |   /\    |___  /  ____| |    / ____|   /\    / ____|__   __|
 # | |__| |  /  \      / /| |__  | |   | |       /  \  | (___    | |   
@@ -225,7 +231,6 @@ spec:
 # | |  | |/ ____ \  / /__| |____| |___| |____ / ____ \ ____) |  | |   
 # |_|  |_/_/    \_\/_____|______|______\_____/_/    \_\_____/   |_|   
 #                                                                     
----
 apiVersion: v1
 kind: Service
 metadata:

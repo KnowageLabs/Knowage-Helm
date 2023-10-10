@@ -83,7 +83,7 @@ Create the name of the service account to use
 
 
 {{- define "knowage.domain" -}}
-{{- regexReplaceAll "/.+$" ( regexReplaceAll "^https://" .Values.knowage.completeExternalUrl "" ) "" -}}
+{{- regexReplaceAll "/.+$" ( regexReplaceAll ":\\d+" ( regexReplaceAll "^https?://" .Values.knowage.completeExternalUrl "" ) "" ) "" -}}
 {{- end -}}
 
 
@@ -400,11 +400,7 @@ Create the name of the service for the ingress
 Create the name of the service for the ingress
 */}}
 {{- define "knowage.ingress.port" -}}
-{{- if eq ( default .Values.knowage.deployCustomReverseProxy false ) true -}}
-80
-{{- else -}}
 443
-{{- end -}}
 {{- end }}
 
 {{/*
@@ -440,3 +436,76 @@ IfNotPresent
 {{- print .Values.knowage.cache.port }}
 {{- end}}
 {{- end}}
+
+{{/*
+OAuth2
+*/}}
+
+{{/*
+Create the name of the secret for the main app
+*/}}
+{{- define "knowage.oauth2.secret" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "oauth2" }}
+{{- end }}
+
+{{/*
+Manage various configuration of OAuth2
+*/}}
+{{- if eq .Values.knowage.oauth2.type "PKCE" -}}
+{{- fail "Not implemented yet" }}
+{{- else if eq .Values.knowage.oauth2.type "AUTHORIZATION_CODE" -}}
+{{- fail "Not implemented yet" }}
+{{- else if eq .Values.knowage.oauth2.type "IMPLICIT" -}}
+{{- end}}
+
+{{/*
+TLS
+*/}}
+
+{{/*
+Create the name of the TLS certificate of the main app
+*/}}
+{{- define "knowage.tls.main.name" -}}
+{{ printf "%s-tls-%s" (include "knowage.fullname" .) "main" }}
+{{- end }}
+
+{{/*
+Generate certificates for the AS
+*/}}
+{{- define "knowage.tls.main.cert" -}}
+{{- $currTlsAs := lookup "v1" "Secret" .Release.Namespace ( include "knowage.tls.main.name" . ) -}}
+{{- if $currTlsAs -}}
+tls.crt: {{ index $currTlsAs.data "tls.crt" }}
+tls.key: {{ index $currTlsAs.data "tls.key" }}
+{{- else -}}
+{{- $tlsAsAltNames := list ( printf "%s.%s" (include "knowage.service" .) .Release.Namespace ) ( printf "%s.%s.svc" (include "knowage.service" .) .Release.Namespace ) -}}
+{{- $tlsAsCa := genCA (include "knowage.service" .) 365 -}}
+{{- $tlsAsCert := genSignedCert ( include "knowage.service" . ) nil $tlsAsAltNames 365 $tlsAsCa -}}
+tls.crt: {{ $tlsAsCert.Cert | b64enc }}
+tls.key: {{ $tlsAsCert.Key | b64enc }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the TLS certificate of the reverse proxy
+*/}}
+{{- define "knowage.tls.proxy.name" -}}
+{{ printf "%s-tls-%s" (include "knowage.fullname" .) "proxy" }}
+{{- end }}
+
+{{/*
+Generate certificates for reverse proxy
+*/}}
+{{- define "knowage.tls.proxy.cert" -}}
+{{- $currTlsProxy := lookup "v1" "Secret" .Release.Namespace ( include "knowage.tls.proxy.name" . ) -}}
+{{- if $currTlsProxy -}}
+tls.crt: {{ index $currTlsProxy.data "tls.crt" }}
+tls.key: {{ index $currTlsProxy.data "tls.key" }}
+{{- else -}}
+{{- $tlsProxyAltNames := list ( printf "%s.%s" (include "knowage.proxy.deployment" .) .Release.Namespace ) ( printf "%s.%s.svc" (include "knowage.proxy.deployment" .) .Release.Namespace ) -}}
+{{- $tlsProxyCa := genCA (include "knowage.proxy.deployment" .) 365 -}}
+{{- $tlsProxyCert := genSignedCert ( include "knowage.proxy.deployment" . ) nil $tlsProxyAltNames 365 $tlsProxyCa -}}
+tls.crt: {{ $tlsProxyCert.Cert | b64enc }}
+tls.key: {{ $tlsProxyCert.Key | b64enc }}
+{{- end -}}
+{{- end -}}

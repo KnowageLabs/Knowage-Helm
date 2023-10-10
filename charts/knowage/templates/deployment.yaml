@@ -17,6 +17,7 @@
 #
 
 {{ if eq ( default .Values.knowage.deployCustomReverseProxy false ) true }}
+---
 #  _____  ________      ________ _____   _____ ______   _____  _____   ______   ____     __
 # |  __ \|  ____\ \    / /  ____|  __ \ / ____|  ____| |  __ \|  __ \ / __ \ \ / /\ \   / /
 # | |__) | |__   \ \  / /| |__  | |__) | (___ | |__    | |__) | |__) | |  | \ V /  \ \_/ / 
@@ -24,7 +25,6 @@
 # | | \ \| |____   \  /  | |____| | \ \ ____) | |____  | |    | | \ \| |__| / . \    | |   
 # |_|  \_\______|   \/   |______|_|  \_\_____/|______| |_|    |_|  \_\\____/_/ \_\   |_|   
 #                                                                                          
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -38,6 +38,9 @@ spec:
       {{- include "knowage.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      annotations:
+        # Restart pods when config and secret change
+        checksum/config: {{ include (print $.Template.BasePath "/config-reverse-proxy.yaml") . | sha256sum }}
       labels:
         knowage-suite.com/app: proxy
         {{- include "knowage.selectorLabels" . | nindent 8 }}
@@ -47,7 +50,12 @@ spec:
         image: "nginx:1"
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 80
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        - name: https
+          containerPort: 443
+          protocol: TCP
         volumeMounts:
         - mountPath: /etc/nginx
           readOnly: true
@@ -56,6 +64,9 @@ spec:
           name: log
         - mountPath: /var/cache/nginx
           name: cache
+        - mountPath: /etc/nginx/cert
+          readOnly: true
+          name: tls
       volumes:
       - name: {{ include "knowage.proxy.config" . }}
         configMap:
@@ -67,8 +78,17 @@ spec:
         emptyDir: {}
       - name: cache
         emptyDir: {}
+      - name: tls
+        secret:
+          secretName: {{ include "knowage.tls.proxy.name" . }}
+          items:
+            - key: tls.crt
+              path: tls.crt
+            - key: tls.key
+              path: tls.key
 {{ end }}
 
+---
 #  __  __          _____ _   _            _____  _____  
 # |  \/  |   /\   |_   _| \ | |     /\   |  __ \|  __ \ 
 # | \  / |  /  \    | | |  \| |    /  \  | |__) | |__) |
@@ -76,7 +96,6 @@ spec:
 # | |  | |/ ____ \ _| |_| |\  |  / ____ \| |    | |     
 # |_|  |_/_/    \_\_____|_| \_| /_/    \_\_|    |_|     
 #                                                       
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -91,6 +110,10 @@ spec:
       {{- include "knowage.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      annotations:
+        # Restart pods when config and secret change
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
       labels:
         knowage-suite.com/app: knowage
         {{- include "knowage.selectorLabels" . | nindent 8 }}
@@ -171,6 +194,64 @@ spec:
           - name: HAZELCAST_HOSTS
             value: {{ include "knowage.hazelcast.service" . }}
 {{- end }}
+
+{{ if .Values.knowage.oauth2.enabled }}
+          - name: OAUTH2_AUTHORIZE_URL
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "knowage.oauth2.secret" . }}
+                key: authorizeUrl
+          - name: OAUTH2_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "knowage.oauth2.secret" . }}
+                key: clientId
+          - name: OAUTH2_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "knowage.oauth2.secret" . }}
+                key: clientSecret
+          - name: OAUTH2_ACCESS_TOKEN_URL
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "knowage.oauth2.secret" . }}
+                key: accessTokenUrl
+          - name: OAUTH2_FLOW_TYPE
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "knowage.oauth2.secret" . }}
+                key: flowType
+          - name: OAUTH2_REDIRECT_URL
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "knowage.oauth2.secret" . }}
+                key: redirectUrl
+          - name: OAUTH2_JWKS_URL
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "knowage.oauth2.secret" . }}
+                key: jwksUrl
+          - name: OAUTH2_SCOPES
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "knowage.oauth2.secret" . }}
+                key: scopes
+          - name: OAUTH2_JWT_TOKEN_ISSUER
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "knowage.oauth2.secret" . }}
+                key: jwtTokenIssuer
+          - name: OAUTH2_USER_NAME_CLAIM
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "knowage.oauth2.secret" . }}
+                key: userNameClaim
+          - name: OAUTH2_ID_TOKEN_ROLES_JSON_PATH
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "knowage.oauth2.secret" . }}
+                key: roleJsonPath
+{{- end }}
         livenessProbe:
           httpGet:
             path: /
@@ -212,7 +293,9 @@ spec:
           mountPath: /home/knowage/apache-tomcat/conf/server.xml.d
         - name: ext-context
           mountPath: /home/knowage/apache-tomcat/conf/context.xml.d
-      {{ if .Values.knowage.imagePullSecret -}}
+        - name: tls
+          mountPath: /home/knowage/apache-tomcat/conf/tls
+      {{- if .Values.knowage.imagePullSecret -}}
       imagePullSecrets:
       - name: {{ print .Values.knowage.imagePullSecret | quote }}
       {{- end }}
@@ -244,11 +327,17 @@ spec:
           items:
             - key: extContext
               path: extContext
-
-
-
+      - name: tls
+        secret:
+          secretName: {{ include "knowage.tls.proxy.name" . }}
+          items:
+            - key: tls.crt
+              path: certificate.crt
+            - key: tls.key
+              path: key.key
 
 {{ if .Values.knowage.deployMetadataDb }}
+---
 #  __  __           _____ _______ ______ _____    _____  ____  
 # |  \/  |   /\    / ____|__   __|  ____|  __ \  |  __ \|  _ \ 
 # | \  / |  /  \  | (___    | |  | |__  | |__) | | |  | | |_) |
@@ -256,7 +345,6 @@ spec:
 # | |  | |/ ____ \ ____) |  | |  | |____| | \ \  | |__| | |_) |
 # |_|  |_/_/    \_\_____/   |_|  |______|_|  \_\ |_____/|____/ 
 #                                                              
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -323,6 +411,7 @@ spec:
 
 
 {{ if .Values.knowage.deployCacheDb }}
+---
 #   _____          _____ _    _ ______   _____  ____  
 #  / ____|   /\   / ____| |  | |  ____| |  __ \|  _ \ 
 # | |       /  \ | |    | |__| | |__    | |  | | |_) |
@@ -330,7 +419,6 @@ spec:
 # | |____ / ____ \ |____| |  | | |____  | |__| | |_) |
 #  \_____/_/    \_\_____|_|  |_|______| |_____/|____/ 
 #                                                     
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -398,6 +486,7 @@ spec:
 
 
 {{ if eq ( default .Values.knowage.installSampleData false ) true }}
+---
 #  ______ ____   ____  _____  __  __          _____ _______ 
 # |  ____/ __ \ / __ \|  __ \|  \/  |   /\   |  __ \__   __|
 # | |__ | |  | | |  | | |  | | \  / |  /  \  | |__) | | |   
@@ -405,7 +494,6 @@ spec:
 # | |   | |__| | |__| | |__| | |  | |/ ____ \| | \ \  | |   
 # |_|    \____/ \____/|_____/|_|  |_/_/    \_\_|  \_\ |_|   
 #                                                           
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -442,6 +530,7 @@ spec:
 {{ end }}
 
 {{ if or (eq ( default .Values.knowage.deployPython false ) true) (eq ( default .Values.knowage.python.deploy false ) true) }}
+---
 #  _______     _________ _    _  ____  _   _ 
 # |  __ \ \   / /__   __| |  | |/ __ \| \ | |
 # | |__) \ \_/ /   | |  | |__| | |  | |  \| |
@@ -449,7 +538,6 @@ spec:
 # | |      | |     | |  | |  | | |__| | |\  |
 # |_|      |_|     |_|  |_|  |_|\____/|_| \_|
 #                                            
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -481,16 +569,16 @@ spec:
           httpGet:
             path: /dataset/libraries
             port: 5000
-          initialDelaySeconds: 10
+          initialDelaySeconds: 30
           failureThreshold: 5
-          periodSeconds: 1
+          periodSeconds: 5
         readinessProbe:
           httpGet:
             path: /dataset/libraries
             port: 5000
-          initialDelaySeconds: 10
+          initialDelaySeconds: 30
           failureThreshold: 5
-          periodSeconds: 1
+          periodSeconds: 5
         ports:
           - name: http
             containerPort: 5000
@@ -565,6 +653,7 @@ spec:
 {{ end }}
 
 {{ if eq ( default .Values.knowage.deployHazelcast false ) true }}
+---
 #  _    _           ____________ _      _____           _____ _______ 
 # | |  | |   /\    |___  /  ____| |    / ____|   /\    / ____|__   __|
 # | |__| |  /  \      / /| |__  | |   | |       /  \  | (___    | |   
@@ -572,7 +661,6 @@ spec:
 # | |  | |/ ____ \  / /__| |____| |___| |____ / ____ \ ____) |  | |   
 # |_|  |_/_/    \_\/_____|______|______\_____/_/    \_\_____/   |_|   
 #                                                                     
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
