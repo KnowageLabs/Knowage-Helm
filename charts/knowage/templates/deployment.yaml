@@ -267,12 +267,18 @@ spec:
           failureThreshold: 5
           periodSeconds: 30
         ports:
-          - name: http
-            containerPort: 8080
-            protocol: TCP
-          - name: https
-            containerPort: 8443
-            protocol: TCP
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        - name: https
+          containerPort: 8443
+          protocol: TCP
+        - name: jmx
+          containerPort: 9000
+          protocol: TCP
+        - name: jmx-rmi
+          containerPort: 9001
+          protocol: TCP
         resources:
           requests:
             cpu: 2

@@ -16,6 +16,16 @@ straightforward as possible.
 
 ### Fixed
 
+## [1.0.10] - 2023-10-16
+
+### Added
+
+### Changed
+
+- JMX
+
+### Fixed
+
 ## [1.0.9] - 2023-10-10
 
 Here we would have the update steps for 1.0.9 for people to follow.
@@ -30,4 +40,3 @@ Here we would have the update steps for 1.0.9 for people to follow.
 - Ingress use HTTPS by default to call the internal reverse proxy and/or KNOWAGE.
 
 ### Fixed
- 
