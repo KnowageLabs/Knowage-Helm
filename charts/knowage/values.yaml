@@ -175,3 +175,6 @@ knowage:
     jwtTokenIssuer: https://iam/
     userNameClaim:  "family_name given_name"
     roleJsonPath:   "$.applications[?(@.name == 'Knowage')].profiles[*].name"
+
+  # For debug only
+  # useProfileFactoryClass:

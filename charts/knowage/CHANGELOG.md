@@ -16,6 +16,18 @@ straightforward as possible.
 
 ### Fixed
 
+## [1.0.11] - 2023-10-17
+
+### Added
+
+- Add new config knowage.useProfileFactoryClass for debug only: disabled by default
+
+### Changed
+
+### Fixed
+
+- Fix missing Python and R services when using the new knowage.python.deploy and knowage.r.deploy configurations
+
 ## [1.0.10] - 2023-10-16
 
 ### Added

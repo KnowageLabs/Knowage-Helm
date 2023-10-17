@@ -172,7 +172,7 @@ spec:
       targetPort: main
 {{ end }}
 
-{{ if eq ( default .Values.knowage.deployPython false ) true }}
+{{ if or (eq ( default .Values.knowage.deployPython false ) true) (eq ( default .Values.knowage.python.deploy false ) true) }}
 ---
 #  _______     _________ _    _  ____  _   _ 
 # |  __ \ \   / /__   __| |  | |/ __ \| \ | |
@@ -197,7 +197,7 @@ spec:
       targetPort: http
 {{ end }}
 
-{{ if eq ( default .Values.knowage.deployR false ) true }}
+{{ if or (eq ( default .Values.knowage.deployR false ) true) (eq ( default .Values.knowage.r.deploy false ) true) }}
 ---
 #  _____  
 # |  __ \ 

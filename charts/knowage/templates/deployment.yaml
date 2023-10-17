@@ -195,7 +195,7 @@ spec:
             value: {{ include "knowage.hazelcast.service" . }}
 {{- end }}
 
-{{ if .Values.knowage.oauth2.enabled }}
+{{- if .Values.knowage.oauth2.enabled }}
           - name: OAUTH2_AUTHORIZE_URL
             valueFrom:
               secretKeyRef:
@@ -251,6 +251,10 @@ spec:
               secretKeyRef:
                 name: {{ include "knowage.oauth2.secret" . }}
                 key: roleJsonPath
+{{- end }}
+{{- if .Values.knowage.useProfileFactoryClass }}
+          - name: USER_PROFILE_FACTORY_CLASS
+            value: {{ print .Values.knowage.useProfileFactoryClass | quote }}
 {{- end }}
         livenessProbe:
           httpGet:
