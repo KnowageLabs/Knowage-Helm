@@ -309,6 +309,9 @@ spec:
       imagePullSecrets:
       - name: {{ print .Values.knowage.imagePullSecret | quote }}
       {{- end }}
+{{- if .Values.knowage.priorityClasses.enabled }}
+      priorityClassName: {{ include "knowage.priorityclass.primary" . }}
+{{- end }}
       volumes:
       - name: resources
         persistentVolumeClaim:
@@ -597,6 +600,9 @@ spec:
           - name: requirements
             mountPath: /app/requirements.txt
             subPath: requirements.txt
+{{- if .Values.knowage.priorityClasses.enabled }}
+      priorityClassName: {{ include "knowage.priorityclass.secondary" . }}
+{{- end }}
       volumes:
         - name: requirements
           configMap:
@@ -660,6 +666,9 @@ spec:
           - name: http
             containerPort: 5001
             protocol: TCP
+{{- if .Values.knowage.priorityClasses.enabled }}
+      priorityClassName: {{ include "knowage.priorityclass.secondary" . }}
+{{- end }}
 {{ end }}
 
 {{ if eq ( default .Values.knowage.deployHazelcast false ) true }}

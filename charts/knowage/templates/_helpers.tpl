@@ -414,7 +414,6 @@ IfNotPresent
 {{- end -}}
 {{- end }}
 
-
 {{ default true    .Values.knowage.installSampleData }}
 {{ default true    .Values.knowage.deployMetadataDb }}
 {{ default true    .Values.knowage.deployCacheDb }}
@@ -509,3 +508,22 @@ tls.crt: {{ $tlsProxyCert.Cert | b64enc }}
 tls.key: {{ $tlsProxyCert.Key | b64enc }}
 {{- end -}}
 {{- end -}}
+
+
+{{/*
+Priority class
+*/}}
+
+{{/*
+Primary services.
+*/}}
+{{- define "knowage.priorityclass.primary" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "primary" }}
+{{- end }}
+
+{{/*
+Secondary services.
+*/}}
+{{- define "knowage.priorityclass.secondary" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "secondary" }}
+{{- end }}
