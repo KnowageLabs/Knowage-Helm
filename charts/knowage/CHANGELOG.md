@@ -9,9 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 Please set your values.yaml to disable or to enable priority classes: see knowage.priorityClasses.enabled; they are useful in cluster with limited resources to let the main app of KNOWAGE to take precedence to other apps.
 
+Also, take a look to knowage.resources, knowage.python.resources and knowage.r.resources and set the resources for every app: they're optional; the default values was the ones previously defined.
+
 ### Added
 
 - Primitive support to priority classes
+- Let the user to set the resources for every KNOWAGE app
 
 ### Changed
 

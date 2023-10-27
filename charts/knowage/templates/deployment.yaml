@@ -56,6 +56,13 @@ spec:
         - name: https
           containerPort: 443
           protocol: TCP
+        resources:
+          requests:
+            cpu: 250m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
         volumeMounts:
         - mountPath: /etc/nginx
           readOnly: true
@@ -285,11 +292,11 @@ spec:
           protocol: TCP
         resources:
           requests:
-            cpu: 2
-            memory: 8Gi
+            cpu: {{ default 2 (((.Values.knowage).resources).requests).cpu }}
+            memory: {{ default "8Gi" (((.Values.knowage.resources).requests).memory) }}
           limits:
-            cpu: 4
-            memory: 16Gi
+            cpu: {{ default 4 (((.Values.knowage.resources).limits).cpu) }}
+            memory: {{ default "16Gi" (((.Values.knowage.resources).limits).memory) }}
         volumeMounts:
         - name: resources
           mountPath: /home/knowage/apache-tomcat/resources
@@ -592,6 +599,13 @@ spec:
           initialDelaySeconds: 30
           failureThreshold: 5
           periodSeconds: 5
+        resources:
+          requests:
+            cpu: {{ default 0.5 ((.Values.knowage.python.resources).requests).cpu }}
+            memory: {{ default "128Mi" (((.Values.knowage.python.resources).requests).memory) }}
+          limits:
+            cpu: {{ default 4 (((.Values.knowage.python.resources).limits).cpu) }}
+            memory: {{ default "16Gi" (((.Values.knowage.python.resources).limits).memory) }}
         ports:
           - name: http
             containerPort: 5000
@@ -662,6 +676,13 @@ spec:
           initialDelaySeconds: 10
           failureThreshold: 5
           periodSeconds: 1
+        resources:
+          requests:
+            cpu: {{ default 0.5 ((.Values.knowage.r.resources).requests).cpu }}
+            memory: {{ default "128Mi" (((.Values.knowage.r.resources).requests).memory) }}
+          limits:
+            cpu: {{ default 4 (((.Values.knowage.r.resources).limits).cpu) }}
+            memory: {{ default "16Gi" (((.Values.knowage.r.resources).limits).memory) }}
         ports:
           - name: http
             containerPort: 5001
