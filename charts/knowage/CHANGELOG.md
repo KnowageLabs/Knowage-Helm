@@ -15,6 +15,7 @@ Also, take a look to knowage.resources, knowage.python.resources and knowage.r.r
 
 - Primitive support to priority classes
 - Let the user to set the resources for every KNOWAGE app
+- Minor fixes to the internal reverse proxy
 
 ### Changed
 
