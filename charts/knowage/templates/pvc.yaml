@@ -16,6 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+{{- $pvcMainApp := (lookup "v1" "PersistentVolumeClaim" .Release.Namespace ( include "knowage.pvc" . ) ) }}
+{{- if not $pvcMainApp }}
 ---
 #  __  __          _____ _   _            _____  _____  
 # |  \/  |   /\   |_   _| \ | |     /\   |  __ \|  __ \ 
@@ -27,11 +29,13 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
+  annotations:
+    helm.sh/resource-policy: "keep"
   name: {{ include "knowage.pvc" . }}
   namespace: {{ .Release.Namespace }}
 spec:
   accessModes:
-  - ReadWriteOnce
+  - ReadWriteMany
   resources:
     requests:
       storage: 10Gi
@@ -40,9 +44,10 @@ spec:
 {{- else }}
   volumeName: {{ include "knowage.volume" . }}
 {{- end }}
+{{- end }}
 
-
-{{ if .Values.knowage.deployMetadataDb }}
+{{- $pvcMasterDb := (lookup "v1" "PersistentVolumeClaim" .Release.Namespace ( include "knowage.db.pvc" . ) ) }}
+{{- if and ( not $pvcMasterDb ) .Values.knowage.deployMetadataDb }}
 ---
 #  __  __           _____ _______ ______ _____    _____  ____  
 # |  \/  |   /\    / ____|__   __|  ____|  __ \  |  __ \|  _ \ 
@@ -54,6 +59,8 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
+  annotations:
+    helm.sh/resource-policy: "keep"
   name: {{ include "knowage.db.pvc" . }}
   namespace: {{ .Release.Namespace }}
 spec:
@@ -70,7 +77,8 @@ spec:
 {{- end }}
 
 
-{{ if .Values.knowage.deployCacheDb }}
+{{- $pvcCacheDb := (lookup "v1" "PersistentVolumeClaim" .Release.Namespace ( include "knowage.cache.pvc" . ) ) }}
+{{- if and ( not $pvcCacheDb ) .Values.knowage.deployCacheDb }}
 ---
 #   _____          _____ _    _ ______   _____  ____  
 #  / ____|   /\   / ____| |  | |  ____| |  __ \|  _ \ 
@@ -82,6 +90,8 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
+  annotations:
+    helm.sh/resource-policy: "keep"
   name: {{ include "knowage.cache.pvc" . }}
   namespace: {{ .Release.Namespace }}
 spec:
@@ -95,4 +105,4 @@ spec:
 {{- else }}
   volumeName: {{ include "knowage.cache.volume" . }}
 {{- end }}
-{{ end }}
+{{- end }}

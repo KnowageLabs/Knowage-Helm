@@ -5,21 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased] - yyyy-mm-dd
+## [1.0.12] - 2023-10-27
 
 Please set your values.yaml to disable or to enable priority classes: see knowage.priorityClasses.enabled; they are useful in cluster with limited resources to let the main app of KNOWAGE to take precedence to other apps.
 
 Also, take a look to knowage.resources, knowage.python.resources and knowage.r.resources and set the resources for every app: they're optional; the default values was the ones previously defined.
 
+Finally, we changed the way the chart manages the persistentvolumeclaim/knowage-main: if a persistentvolumeclaim/knowage-main already exists, KNOWAGE will use it, if doesn't, the charts creates a new one. You must need to annotate your current persistentvolumeclaim/knowage-main using:
+
+```
+kubectl annotate pvc knowage-main helm.sh/resource-policy=keep
+```
+
+We suggest you to migrate your PVC to a ReadWriteMany one.
+
 ### Added
 
 - Primitive support to priority classes
 - Let the user to set the resources for every KNOWAGE app
-- Minor fixes to the internal reverse proxy
 
 ### Changed
 
+- A new persistentvolumeclaim/knowage-main is now ReadWriteMany by default. 
+
 ### Fixed
+
+- Minor fixes to the internal reverse proxy
 
 ## [1.0.11] - 2023-10-17
 
