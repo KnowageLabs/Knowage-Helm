@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.13] - 2023-10-30
+
+### Added
+
+### Changed
+
+### Fixed
+
+- Websocket connection in internal reverse proxy
+
 ## [1.0.12] - 2023-10-27
 
 Please set your values.yaml to disable or to enable priority classes: see knowage.priorityClasses.enabled; they are useful in cluster with limited resources to let the main app of KNOWAGE to take precedence to other apps.
