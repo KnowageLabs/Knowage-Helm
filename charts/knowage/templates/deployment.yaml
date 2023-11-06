@@ -127,7 +127,7 @@ spec:
     spec:
       containers:
       - name: {{ include "knowage.pod" . }}
-        image: {{ printf "%s:%s" ( default "knowagelabs/knowage-server-docker" .Values.knowage.customImageName ) .Chart.AppVersion | quote }}
+        image: {{ printf "%s:%s" ( default "knowagelabs/knowage-server-docker" .Values.knowage.customImageName ) ( default .Chart.AppVersion (.Values.knowage.version) ) | quote }}
         imagePullPolicy: {{ include "knowage.imagePullPolicy" . }}
         env:
           - name: DB_USER
@@ -577,7 +577,7 @@ spec:
     spec:
       containers:
       - name: {{ include "knowage.python.pod" . }}
-        image: "knowagelabs/knowage-python-docker:{{ .Chart.AppVersion }}"
+        image: {{ printf "%s:%s" "knowagelabs/knowage-python-docker" ( default .Chart.AppVersion (.Values.knowage.python.version) ) | quote }}
         imagePullPolicy: {{ include "knowage.imagePullPolicy" . }}
         env:
           - name: HMAC_KEY
@@ -654,7 +654,7 @@ spec:
     spec:
       containers:
       - name: {{ include "knowage.r.pod" . }}
-        image: "knowagelabs/knowage-r-docker:{{ .Chart.AppVersion }}"
+        image: {{ printf "%s:%s" "knowagelabs/knowage-r-docker" ( default .Chart.AppVersion (.Values.knowage.r.version) ) | quote }}
         imagePullPolicy: {{ include "knowage.imagePullPolicy" . }}
         env:
           - name: HMAC_KEY

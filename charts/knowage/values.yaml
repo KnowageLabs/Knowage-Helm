@@ -1,4 +1,5 @@
 knowage:
+  version:
 
   # 
   # Install a db with sample data
@@ -163,6 +164,7 @@ knowage:
       limits:
         cpu: 1
         memory: 1Gi
+    version:
 
   r:
     deploy: true
@@ -173,6 +175,7 @@ knowage:
       limits:
         cpu: 1
         memory: 256Mi
+    version:
 
   imagePullPolicy: IfNotPresent
 
