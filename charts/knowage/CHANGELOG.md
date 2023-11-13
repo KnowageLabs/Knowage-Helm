@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.17] - 2023-11-13
+
+### Added
+
+### Changed
+
+### Fixed
+
+- Explicitly specify volumeMode in knowage-main PVC
+
 ## [1.0.16] - 2023-11-13
 
 ### Added

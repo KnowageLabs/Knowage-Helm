@@ -44,6 +44,7 @@ spec:
 {{- else }}
   volumeName: {{ include "knowage.volume" . }}
 {{- end }}
+  volumeMode: Filesystem
 {{- end }}
 
 {{- $pvcMasterDb := (lookup "v1" "PersistentVolumeClaim" .Release.Namespace ( include "knowage.db.pvc" . ) ) }}
@@ -74,6 +75,7 @@ spec:
 {{- else }}
   volumeName: {{ include "knowage.db.volume" . }}
 {{- end }}
+  volumeMode: Filesystem
 {{- end }}
 
 
