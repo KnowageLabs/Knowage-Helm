@@ -105,4 +105,5 @@ spec:
 {{- else }}
   volumeName: {{ include "knowage.cache.volume" . }}
 {{- end }}
+  volumeMode: Filesystem
 {{- end }}

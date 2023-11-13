@@ -1,0 +1,146 @@
+#
+# Knowage, Open Source Business Intelligence suite
+# Copyright (C) 2023 Engineering Ingegneria Informatica S.p.A.
+# 
+# Knowage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Knowage is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+# 
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "knowage.networkpolicy.deny-all" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "knowage.selectorLabels" . | nindent 6 }}
+  policyTypes:
+  - Ingress
+  - Egress
+
+{{ if or (eq ( default .Values.knowage.deployPython false ) true) (eq ( default .Values.knowage.python.deploy false ) true) }}
+---
+#  _______     _________ _    _  ____  _   _ 
+# |  __ \ \   / /__   __| |  | |/ __ \| \ | |
+# | |__) \ \_/ /   | |  | |__| | |  | |  \| |
+# |  ___/ \   /    | |  |  __  | |  | | . ` |
+# | |      | |     | |  | |  | | |__| | |\  |
+# |_|      |_|     |_|  |_|  |_|\____/|_| \_|
+#                                            
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "knowage.networkpolicy.python" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      knowage-suite.com/app: knowage-python
+      {{- include "knowage.selectorLabels" . | nindent 6 }}
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          knowage-suite.com/app: knowage
+          {{- include "knowage.selectorLabels" . | nindent 10 }}
+    ports:
+      - port: http
+        protocol: TCP
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          knowage-suite.com/app: knowage
+          {{- include "knowage.selectorLabels" . | nindent 10 }}
+  # Allow communication to Kubernetes DNS service
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+    - podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+    ports:
+    - protocol: UDP
+      port: 53
+  # Allow internet access
+  - to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+        except:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
+  policyTypes:
+  - Ingress
+  - Egress
+{{ end }}
+
+{{ if or (eq ( default .Values.knowage.deployR false ) true) (eq ( default .Values.knowage.r.deploy false ) true) }}
+---
+#  _____  
+# |  __ \ 
+# | |__) |
+# |  _  / 
+# | | \ \ 
+# |_|  \_\
+#         
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "knowage.networkpolicy.r" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      knowage-suite.com/app: knowage-r
+      {{- include "knowage.selectorLabels" . | nindent 6 }}
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          knowage-suite.com/app: knowage
+          {{- include "knowage.selectorLabels" . | nindent 10 }}
+    ports:
+      - port: http
+        protocol: TCP
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          knowage-suite.com/app: knowage
+          {{- include "knowage.selectorLabels" . | nindent 10 }}
+  # Allow communication to Kubernetes DNS service
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+    - podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+    ports:
+    - protocol: UDP
+      port: 53
+  # Allow internet access
+  - to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+        except:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
+  policyTypes:
+  - Ingress
+  - Egress
+{{ end }}

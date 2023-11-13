@@ -509,7 +509,6 @@ tls.key: {{ $tlsProxyCert.Key | b64enc }}
 {{- end -}}
 {{- end -}}
 
-
 {{/*
 Priority class
 */}}
@@ -527,3 +526,29 @@ Secondary services.
 {{- define "knowage.priorityclass.secondary" -}}
 {{ printf "%s-%s" (include "knowage.fullname" .) "secondary" }}
 {{- end }}
+
+{{/*
+Network policies.
+*/}}
+
+{{/*
+Deny all.
+*/}}
+{{- define "knowage.networkpolicy.deny-all" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "deny-all" }}
+{{- end }}
+
+{{/*
+For Python.
+*/}}
+{{- define "knowage.networkpolicy.python" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "python" }}
+{{- end }}
+
+{{/*
+For R.
+*/}}
+{{- define "knowage.networkpolicy.r" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "r" }}
+{{- end }}
+

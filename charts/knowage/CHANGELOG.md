@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.16] - 2023-11-13
+
+### Added
+
+- Network policies between KNOWAGE components
+
+### Changed
+
+### Fixed
+
+- Explicitly specify volumeMode in knowage-main PVC
+
 ## [1.0.15] - 2023-11-06
 
 ### Added
