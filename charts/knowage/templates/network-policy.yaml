@@ -29,6 +29,20 @@ spec:
   - Ingress
   - Egress
 
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "knowage.networkpolicy.allow-all-to-main-app" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      knowage-suite.com/app: knowage
+      {{- include "knowage.selectorLabels" . | nindent 10 }}  policyTypes:
+  - Ingress
+  ingress:
+    {}
+
 {{ if or (eq ( default .Values.knowage.deployPython false ) true) (eq ( default .Values.knowage.python.deploy false ) true) }}
 ---
 #  _______     _________ _    _  ____  _   _ 

@@ -539,6 +539,13 @@ Deny all.
 {{- end }}
 
 {{/*
+Allow all to main app.
+*/}}
+{{- define "knowage.networkpolicy.allow-all-to-main-app" -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "allow-all-to-main-app" }}
+{{- end }}
+
+{{/*
 For Python.
 */}}
 {{- define "knowage.networkpolicy.python" -}}

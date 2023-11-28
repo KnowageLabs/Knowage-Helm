@@ -11,9 +11,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
+- Reduce number of workers inside Python container
+
 ### Fixed
 
 - Explicitly specify volumeMode in knowage-main PVC
+- Fixed network policies to enable ingress from everywhere to main app
 
 ## [1.0.16] - 2023-11-13
 
