@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.18] - 2023-11-28
+
+### Added
+
+### Changed
+
+### Fixed
+
+- Fixed network policies to enable ingress from everywhere to main app
+
 ## [1.0.17] - 2023-11-13
 
 ### Added

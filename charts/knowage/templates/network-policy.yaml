@@ -38,10 +38,11 @@ spec:
   podSelector:
     matchLabels:
       knowage-suite.com/app: knowage
-      {{- include "knowage.selectorLabels" . | nindent 10 }}  policyTypes:
+      {{- include "knowage.selectorLabels" . | nindent 6 }}
+  policyTypes:
   - Ingress
   ingress:
-    {}
+  - {}
 
 {{ if or (eq ( default .Values.knowage.deployPython false ) true) (eq ( default .Values.knowage.python.deploy false ) true) }}
 ---
