@@ -23,6 +23,10 @@ kind: Ingress
 metadata:
   annotations:
 {{ toYaml .Values.knowage.ingress.annotations | indent 4 }}
+{{- if ((.Values.knowage.ingress).isAlb) }}
+    alb.ingress.kubernetes.io/actions.go-to-home: >
+      {"Type":"redirect","RedirectConfig":{"Path":"/knowage/","StatusCode":"HTTP_302"}}
+{{- end }}
   name: {{ include "knowage.ingress" . }}
   namespace: {{ .Release.Namespace }}
 spec:
@@ -33,6 +37,14 @@ spec:
   - host: {{ include "knowage.domain" . }}
     http:
       paths:
+{{- if ((.Values.knowage.ingress).isAlb) }}
+      - backend:
+          service:
+            name: go-to-home
+            port:
+              name: use-annotation
+        path: /
+        pathType: Exact
       # WARNING : Here we list every context because AWS Load Balancer Controller seems to have
       #  a very strange behavior with pathType equals to Prefix where /knowagecockpitengine, for
       #  example, is not managed by /knowage rule. The Nginx Ingress Controller has the behavior
@@ -128,6 +140,15 @@ spec:
               number: {{ include "knowage.ingress.port" . }}
         path: /knowagewhatifengine
         pathType: Prefix
+{{- else }}
+      - backend:
+          service:
+            name: {{ include "knowage.ingress.service" . }}
+            port:
+              number: {{ include "knowage.ingress.port" . }}
+        path: /knowage
+        pathType: Prefix
+{{- end }}
   tls:
     - hosts:
       - {{ include "knowage.domain" . }}

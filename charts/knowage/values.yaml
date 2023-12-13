@@ -106,6 +106,7 @@ knowage:
   ingress:
     deploy: true
     class: nginx
+    isAlb: false
     annotations:
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/use-regex: "true"
