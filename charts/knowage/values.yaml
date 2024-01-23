@@ -58,13 +58,13 @@ knowage:
 
   # 
   # Pull secret for private registry when using custom images
-  #
+  # 
   imagePullSecret:
   
   # 
   # Storage Classes for server, metadata db and cache db
-  #
-  storageClasses: 
+  # 
+  storageClasses:
     main: 
     db: 
     cache: 

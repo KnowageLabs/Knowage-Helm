@@ -312,9 +312,9 @@ spec:
           mountPath: /home/knowage/apache-tomcat/conf/context.xml.d
         - name: tls
           mountPath: /home/knowage/apache-tomcat/conf/tls
-      {{- if .Values.knowage.imagePullSecret -}}
+      {{- if .Values.knowage.imagePullSecret }}
       imagePullSecrets:
-      - name: {{ print .Values.knowage.imagePullSecret | quote }}
+      - name: {{ .Values.knowage.imagePullSecret }}
       {{- end }}
 {{- if .Values.knowage.priorityClasses.enabled }}
       priorityClassName: {{ include "knowage.priorityclass.primary" . }}
