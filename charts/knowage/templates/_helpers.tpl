@@ -128,8 +128,23 @@ Create the name of the pod of the main app
 {{/*
 Create the name of the persistent volume claim of the main app
 */}}
-{{- define "knowage.pvc" -}}
+{{- define "knowage.pvc.main" -}}
+{{- if ((((.Values.knowage).pvc).main).name) -}}
+{{ .Values.knowage.pvc.main.name }}
+{{- else -}}
 {{ printf "%s-%s" (include "knowage.fullname" .) "main" }}
+{{- end -}}
+{{- end }}
+
+{{/*
+Create the name of the persistent volume claim of the main app's log
+*/}}
+{{- define "knowage.pvc.log" -}}
+{{- if ((((.Values.knowage).pvc).log).name) -}}
+{{ .Values.knowage.pvc.log.name }}
+{{- else -}}
+{{ printf "%s-%s" (include "knowage.fullname" .) "log" }}
+{{- end -}}
 {{- end }}
 
 {{/*

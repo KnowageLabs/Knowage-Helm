@@ -60,7 +60,17 @@ knowage:
   # Pull secret for private registry when using custom images
   # 
   imagePullSecret:
-  
+
+  # 
+  # Let the user to costumize PVCs of the deployment
+  # 
+  # pvc:
+  #   main:
+  #     name: knowage-main-alt
+  #   log:
+  #     enabled: true
+  #     name: knowage-log-alt
+
   # 
   # Storage Classes for server, metadata db and cache db
   # 

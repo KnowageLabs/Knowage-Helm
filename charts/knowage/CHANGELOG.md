@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.21] - 2024-01-24
+
+### Added
+
+- Add PVC for logs of the main app
+- Add custom names for PVCs
+
+### Changed
+
+### Fixed
+
+## [1.0.20] - 2024-01-23
+
+### Added
+
+### Changed
+
+### Fixed
+
+- Fix bug on pull secret for main app
+
 ## [1.0.19] - 2023-12-13
 
 ### Added

@@ -300,6 +300,10 @@ spec:
         volumeMounts:
         - name: resources
           mountPath: /home/knowage/apache-tomcat/resources
+{{- if ((((.Values.knowage).pvc).log).enabled) }}
+        - name: logs
+          mountPath: /home/knowage/apache-tomcat/logs
+{{- end }}
         - name: services-whitelist
           mountPath: /home/knowage/apache-tomcat/resources/services-whitelist.xml
           subPath: services-whitelist.xml
@@ -322,7 +326,12 @@ spec:
       volumes:
       - name: resources
         persistentVolumeClaim:
-          claimName: {{ include "knowage.pvc" . }}
+          claimName: {{ include "knowage.pvc.main" . }}
+{{- if ((((.Values.knowage).pvc).log).enabled) }}
+      - name: logs
+        persistentVolumeClaim:
+          claimName: {{ include "knowage.pvc.log" . }}
+{{- end }}
       - name: services-whitelist
         configMap:
           name: {{ include "knowage.config" . }}

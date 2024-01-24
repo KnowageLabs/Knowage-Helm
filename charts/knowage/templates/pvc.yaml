@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-{{- $pvcMainApp := (lookup "v1" "PersistentVolumeClaim" .Release.Namespace ( include "knowage.pvc" . ) ) }}
+{{- $pvcMainApp := (lookup "v1" "PersistentVolumeClaim" .Release.Namespace ( include "knowage.pvc.main" . ) ) }}
 {{- if not $pvcMainApp }}
 ---
 #  __  __          _____ _   _            _____  _____  
@@ -31,7 +31,7 @@ kind: PersistentVolumeClaim
 metadata:
   annotations:
     helm.sh/resource-policy: "keep"
-  name: {{ include "knowage.pvc" . }}
+  name: {{ include "knowage.pvc.main" . }}
   namespace: {{ .Release.Namespace }}
 spec:
   accessModes:
@@ -46,6 +46,38 @@ spec:
 {{- end }}
   volumeMode: Filesystem
 {{- end }}
+
+{{- $pvcMainLogApp := (lookup "v1" "PersistentVolumeClaim" .Release.Namespace ( include "knowage.pvc.log" . ) ) }}
+{{- if and ((((.Values.knowage).pvc).log).enabled) (not $pvcMainLogApp) }}
+---
+#  __  __          _____ _   _            _____  _____    _      ____   _____ 
+# |  \/  |   /\   |_   _| \ | |     /\   |  __ \|  __ \  | |    / __ \ / ____|
+# | \  / |  /  \    | | |  \| |    /  \  | |__) | |__) | | |   | |  | | |  __ 
+# | |\/| | / /\ \   | | | . ` |   / /\ \ |  ___/|  ___/  | |   | |  | | | |_ |
+# | |  | |/ ____ \ _| |_| |\  |  / ____ \| |    | |      | |___| |__| | |__| |
+# |_|  |_/_/    \_\_____|_| \_| /_/    \_\_|    |_|      |______\____/ \_____|
+#                                                                             
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    helm.sh/resource-policy: "keep"
+  name: {{ include "knowage.pvc.log" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+{{- if .Values.knowage.storageClasses.main }}
+  storageClassName: {{ .Values.knowage.storageClasses.main }}
+{{- else }}
+  volumeName: {{ include "knowage.volume" . }}
+{{- end }}
+  volumeMode: Filesystem
+{{- end }}
+
 
 {{- $pvcMasterDb := (lookup "v1" "PersistentVolumeClaim" .Release.Namespace ( include "knowage.db.pvc" . ) ) }}
 {{- if and ( not $pvcMasterDb ) .Values.knowage.deployMetadataDb }}
