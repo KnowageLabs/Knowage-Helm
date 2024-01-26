@@ -158,7 +158,7 @@ spec:
           - name: DB_TYPE
             value: {{ include "knowage.db.type" . }}
           - name: DB_DO_INITIALIZATION
-            value: {{ include "knowage.db.init" . }}
+            value: {{ include "knowage.db.init" . | quote }}
 
           - name: CACHE_DB_USER
             valueFrom:
