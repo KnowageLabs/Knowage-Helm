@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.23] - 2024-xx-xx
+
+### Added
+
+### Changed
+
+### Fixed
+
+- Add quotes around value of DB_DO_INITIALIZATION to prevent errors when user insert `true` or `false`
+
 ## [1.0.22] - 2024-01-24
 
 ### Added
