@@ -155,6 +155,10 @@ spec:
               configMapKeyRef:
                 name: {{ include "knowage.config" . }}
                 key: dbPort
+          - name: DB_TYPE
+            value: {{ include "knowage.db.type" . }}
+          - name: DB_DO_INITIALIZATION
+            value: {{ include "knowage.db.init" . }}
 
           - name: CACHE_DB_USER
             valueFrom:
@@ -181,6 +185,8 @@ spec:
               configMapKeyRef:
                 name: {{ include "knowage.config" . }}
                 key: cacheDbPort
+          - name: CACHE_TYPE
+            value: {{ include "knowage.cache.type" . }}
 
           - name: HMAC_KEY
             valueFrom:

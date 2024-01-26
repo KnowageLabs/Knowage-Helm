@@ -574,3 +574,24 @@ For R.
 {{ printf "%s-%s" (include "knowage.fullname" .) "r" }}
 {{- end }}
 
+{{/*
+Type of the DB
+*/}}
+{{- define "knowage.db.type" -}}
+{{ default (((.Values.knowage).db).type) | default "MYSQL" }}
+{{- end }}
+
+{{/*
+DB initialization
+*/}}
+{{- define "knowage.db.init" -}}
+{{ default (((.Values.knowage).db).initialize) | default "true" }}
+{{- end }}
+
+{{/*
+Type of the cache
+*/}}
+{{- define "knowage.cache.type" -}}
+{{ default (((.Values.knowage).cache).type) | default "MYSQL" }}
+{{- end }}
+

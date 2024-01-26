@@ -17,19 +17,22 @@ knowage:
   # Databases properties.
   # 
   db:
-    host:     # Needed if you use external DB
-    port:     # Needed if you use external DB
-    user:     "knowage"
-    pass:     # Optional : random value if not provided 
-    rootPass: # Optional : random value if not provided 
-    name:     "knowage_master"
+    host:                        # Needed if you use external DB
+    port:                        # Needed if you use external DB
+    user:       "knowage"
+    pass:                        # Optional: random value if not provided 
+    rootPass:                    # Optional: random value if not provided 
+    name:       "knowage_master"
+    type:       "MYSQL"          # Optional: default to MYSQL, one between MYSQL, MARIADB, ORACLE (needs the driver) and POSTGRES
+    initialize: true             # Optional: default to true, write everything else if you want to skip DB initialization, only available for MYSQL and MARIADB
   cache:
-    host:     # Needed if you use external DB
-    port:     # Needed if you use external DB
-    user:     "knowage"
-    pass:     # Optional : random value if not provided 
-    rootPass: # Optional : random value if not provided 
-    name:     "knowage_cache"
+    host:                        # Needed if you use external DB
+    port:                        # Needed if you use external DB
+    user:       "knowage"
+    pass:                        # Optional: random value if not provided 
+    rootPass:                    # Optional: random value if not provided 
+    name:       "knowage_cache"
+    type:       "MYSQL"          # Optional: default to MYSQL, one between MYSQL, MARIADB, ORACLE (needs the driver) and POSTGRES
   
   # 
   # Security properties.
