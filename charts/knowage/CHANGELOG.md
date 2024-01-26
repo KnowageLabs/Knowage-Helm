@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - Add quotes around value of DB_DO_INITIALIZATION to prevent errors when user insert `true` or `false`
+- Fixed typo CACHE_DB_TYPE
 
 ## [1.0.22] - 2024-01-24
 

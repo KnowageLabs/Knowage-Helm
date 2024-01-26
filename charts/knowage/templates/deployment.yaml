@@ -185,7 +185,7 @@ spec:
               configMapKeyRef:
                 name: {{ include "knowage.config" . }}
                 key: cacheDbPort
-          - name: CACHE_TYPE
+          - name: CACHE_DB_TYPE
             value: {{ include "knowage.cache.type" . }}
 
           - name: HMAC_KEY

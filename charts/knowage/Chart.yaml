@@ -18,7 +18,7 @@
 
 apiVersion: v2
 name: knowage
-version: 1.0.22
+version: 1.0.23
 kubeVersion: ">= 1.22.0-0"
 description: A Helm chart for Kubernetes Suite
 type: application
