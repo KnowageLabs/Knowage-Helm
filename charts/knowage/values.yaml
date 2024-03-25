@@ -209,6 +209,7 @@ knowage:
 
   # For debug only
   # useProfileFactoryClass:
+  # useSSOClass:
 
   resources:
     requests:

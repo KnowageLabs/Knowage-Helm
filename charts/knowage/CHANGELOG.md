@@ -5,7 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.0.23] - 2024-xx-xx
+## [1.0.24] - 2024-03-25
+
+### Added
+
+- Add SSO_CLASS env variable from values
+
+### Changed
+
+### Fixed
+
+
+## [1.0.23] - 2024-01-26
 
 ### Added
 

@@ -269,6 +269,10 @@ spec:
           - name: USER_PROFILE_FACTORY_CLASS
             value: {{ print .Values.knowage.useProfileFactoryClass | quote }}
 {{- end }}
+{{- if .Values.knowage.useSSOClass }}
+          - name: SSO_CLASS
+            value: {{ print .Values.knowage.useSSOClass | quote }}
+{{- end }}
         livenessProbe:
           httpGet:
             path: /
