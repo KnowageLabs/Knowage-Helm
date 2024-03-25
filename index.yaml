@@ -3,6 +3,31 @@ entries:
   knowage:
   - apiVersion: v2
     appVersion: 8.1-SNAPSHOT
+    created: "2024-03-25T14:03:22.821868979Z"
+    description: A Helm chart for Kubernetes Suite
+    digest: 76ff0c86d773c013fa09a311471f97ff21fd4c81b1de32f570b0da124d476e7a
+    home: https://github.com/KnowageLabs/Knowage-Server
+    icon: https://www.knowage-suite.com/site/wp-content/uploads/2021/04/logo_knowage_100px-1.png
+    keywords:
+    - knowage
+    - bi
+    - business intelligence
+    - data
+    - data visualization
+    kubeVersion: '>= 1.22.0-0'
+    maintainers:
+    - name: Knowage Labs
+    name: knowage
+    sources:
+    - https://github.com/KnowageLabs/Knowage-Server
+    - https://github.com/KnowageLabs/Knowage-Server-Docker
+    - https://github.com/KnowageLabs/Knowage-Helm
+    type: application
+    urls:
+    - https://github.com/KnowageLabs/Knowage-Helm/releases/download/knowage-1.0.24/knowage-1.0.24.tgz
+    version: 1.0.24
+  - apiVersion: v2
+    appVersion: 8.1-SNAPSHOT
     created: "2024-01-26T13:38:39.224913967Z"
     description: A Helm chart for Kubernetes Suite
     digest: a3cefce9b2b261cd45f8243f9f048fa422b8b736a6c25e0956e65e419c40b20c
