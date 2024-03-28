@@ -1,1 +1,5 @@
 myvals-*.yaml
+
+# TLS
+tls.cert
+tls.key

@@ -31,3 +31,9 @@ Remember to provide a secret for TLS using the command:
 {{- end }}
 
 {{ if eq ( default .Values.knowage.deployIngress false ) true -}}See {{ include "knowage.proxy.service" . | quote }} service for the internal reverse proxy.{{ end }}
+
+Also remember to create a TLS secret for KNOWAGE with name knowage-tls-proxy using the command:
+
+  kubectl create secret tls knowage-tls-proxy --cert=tls.cert --key=tls.key
+
+To create tls.cert and tls.key we suggest OpenSSL tool.

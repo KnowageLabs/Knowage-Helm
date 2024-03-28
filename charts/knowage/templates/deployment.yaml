@@ -405,7 +405,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: {{ include "knowage.db.pod" . }}
-        image: mariadb:10.3
+        image: docker.io/mariadb:10.3
         env:
           - name: MYSQL_USER
             valueFrom:
@@ -479,7 +479,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: {{ include "knowage.cache.pod" . }}
-        image: mariadb:10.3
+        image: docker.io/mariadb:10.3
         env:
           - name: MYSQL_USER
             valueFrom:
