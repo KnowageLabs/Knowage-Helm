@@ -19,7 +19,7 @@ jobs:
       
       - name: Run Helm Template
         run: |
-          cd charts\knowage
+          cd charts/knowage
           helm template test .
 
   release:
