@@ -368,7 +368,7 @@ spec:
               path: extContext
       - name: tls
         secret:
-          secretName: {{ include "knowage.tls.proxy.name" . }}
+          secretName: {{ include "knowage.tls.main.name" . }}
           items:
             - key: tls.crt
               path: certificate.crt
